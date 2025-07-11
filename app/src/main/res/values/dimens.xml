@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="horizontal_margin">12dp</dimen>
+    <dimen name="low_margin">12dp</dimen>
+    <dimen name="button_corner">20dp</dimen>
+    <dimen name="icon_pudding">8dp</dimen>
+</resources>
