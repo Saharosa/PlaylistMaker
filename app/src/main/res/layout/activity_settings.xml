@@ -43,7 +43,8 @@
         app:icon = "@drawable/share"
         app:iconTint = "@color/gray"
         app:iconGravity= "end"
-        android:paddingRight="@dimen/icon_right_pudding"/>
+        android:paddingRight="@dimen/icon_right_pudding"
+        android:background="@android:color/transparent"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_height"
@@ -58,7 +59,8 @@
         app:icon = "@drawable/group"
         app:iconTint = "@color/gray"
         app:iconGravity= "end"
-        android:paddingRight="@dimen/icon_right_pudding"/>
+        android:paddingRight="@dimen/icon_right_pudding"
+        android:background="@android:color/transparent"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_height"
@@ -73,6 +75,7 @@
         app:icon = "@drawable/arrow"
         app:iconTint = "@color/gray"
         app:iconGravity= "end"
-        android:paddingRight="@dimen/icon_right_pudding"/>
+        android:paddingRight="@dimen/icon_right_pudding"
+        android:background="@android:color/transparent"/>
 
 </LinearLayout>
