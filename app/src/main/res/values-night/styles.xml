@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="backgroundMain">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/black</item>
+        <item name="android:theme">@style/Base.Theme.PlaylistMaker</item>
+    </style>
     <style name="button_main_activity"
         parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent </item>

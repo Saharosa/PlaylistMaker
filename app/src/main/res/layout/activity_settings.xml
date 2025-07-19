@@ -6,7 +6,7 @@
     android:theme="@style/Base.Theme.PlaylistMaker"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settings"
-    android:background="#1A1B22">
+    android:background="?attr/colorPrimary">
     <Button
         style = "@style/button_settings_activity"
 
@@ -27,14 +27,17 @@
     <Button
         style="@style/button_settings_activity"
         android:text="@string/sharing"
-        app:icon = "@drawable/share"/>
+        app:icon = "@drawable/share"
+        android:id="@+id/buttonShare"/>
     <Button
        style="@style/button_settings_activity"
         android:text="@string/support"
-        app:icon = "@drawable/group"/>
+        app:icon = "@drawable/group"
+        android:id="@+id/support"/>
     <Button
         android:text="@string/user_agreement"
         app:icon = "@drawable/arrow"
-        style="@style/button_settings_activity"/>
+        style="@style/button_settings_activity"
+        android:id="@+id/userAgreement"/>
 
 </LinearLayout>
