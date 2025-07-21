@@ -20,7 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         val buttonHome = findViewById<Button>(R.id.home)
         buttonHome.setOnClickListener {
-            val displayIntent = Intent(this, SearchActivity::class.java)
+            val displayIntent = Intent(this, MainActivity::class.java)
             startActivity(displayIntent)
         }
         val buttonSupport = findViewById<Button>(R.id.support)
@@ -29,6 +29,7 @@ class SettingsActivity : AppCompatActivity() {
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
             shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("yourEmail@ya.ru"))
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Сообщение разработчикам и разработчицам приложения Playlist Maker")
             shareIntent.putExtra(Intent.EXTRA_TEXT, message)
             startActivity(shareIntent)
         }
