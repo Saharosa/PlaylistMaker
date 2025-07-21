@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.view.inputmethod.InputMethodManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,12 +30,9 @@ class SearchActivity : AppCompatActivity() {
         val buttonHome = findViewById<Button>(R.id.home)
         val buttonCross = findViewById<Button>(R.id.cross)
         val search = findViewById<EditText>(R.id.search)
-        if (savedInstanceState != null) {
-            Toast.makeText(this, "Сохранение загружается", Toast.LENGTH_SHORT).show()
-            searchText = savedInstanceState.getString("searchText","2").toString()
-            search.setText(searchText)
+        search.setOnClickListener{
+            search.requestFocus()
         }
-        else Toast.makeText(this, "Сохранение ne загружается", Toast.LENGTH_SHORT).show()
         buttonHome.setOnClickListener(){
             val displayIntent = Intent(this,MainActivity::class.java)
             startActivity(displayIntent)
@@ -42,6 +40,8 @@ class SearchActivity : AppCompatActivity() {
         buttonCross.setOnClickListener(){
             search.setText("")
             searchText=""
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(search.windowToken, 0)
         }
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -60,10 +60,15 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         search.addTextChangedListener(simpleTextWatcher)
+        search.setText(searchText)
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("searchText",searchText)
-        Toast.makeText(this, "Состояние сохранено "+searchText, Toast.LENGTH_SHORT).show()
+       }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        searchText = savedInstanceState.getString("searchText","")
     }
 }

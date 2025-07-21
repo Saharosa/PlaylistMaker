@@ -4,8 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -35,7 +37,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         val buttonShare = findViewById<Button>(R.id.buttonShare)
         buttonShare.setOnClickListener {
-            val message = "https://practicum.yandex.com/android-developer/"
+            val message = getString(R.string.adURL)
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, message)
@@ -43,10 +45,19 @@ class SettingsActivity : AppCompatActivity() {
         }
         val buttonUserAgreement = findViewById<Button>(R.id.userAgreement)
         buttonUserAgreement.setOnClickListener{
-            val url = "https://yandex.ru/legal/practicum_offer/"
+            val url = getString(R.string.ypURL)
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(browserIntent)
         }
-
+        val switchDarkTheme = findViewById<Switch>(R.id.dark_theme)
+        switchDarkTheme.setOnCheckedChangeListener {_, isChecked ->
+            switchTheme(!isChecked)
+        }
     }
+}
+
+fun switchTheme(isDark:Boolean):Boolean{
+    if(!isDark) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    return !isDark
 }

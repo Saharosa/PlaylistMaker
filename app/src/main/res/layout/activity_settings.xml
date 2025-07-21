@@ -23,6 +23,7 @@
             android:text="@string/dark_theme"
             style="@style/top_button"
             android:paddingRight="6dp"
+            android:id="@+id/dark_theme"
             />
     <Button
         style="@style/top_button"

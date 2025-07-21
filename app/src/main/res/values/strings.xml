@@ -7,4 +7,6 @@
     <string name="sharing">Поделиться приложением</string>
     <string name="support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательско соглашение</string>
+    <string name="ypURL">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="adURL">https://practicum.yandex.com/android-developer/</string>
 </resources>
