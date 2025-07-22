@@ -9,4 +9,5 @@
     <string name="user_agreement">Пользовательско соглашение</string>
     <string name="ypURL">https://yandex.ru/legal/practicum_offer/</string>
     <string name="adURL">https://practicum.yandex.com/android-developer/</string>
+    <string name="message">Привет, Android-разработка — это круто!</string>
 </resources>

@@ -23,7 +23,7 @@
         android:layout_marginBottom="0dp"
         android:id="@+id/home"
         android:layout_height="56dp"
-        app:iconTint="@color/black"
+        app:iconTint="?attr/colorOnPrimary"
         />
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:layout_marginHorizontal="@dimen/margin_horizontal_activity"
             android:layout_marginVertical="@dimen/margin_vertical_activity"
             app:cardCornerRadius="10dp">
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/mist_gray"
@@ -39,17 +39,17 @@
             android:padding="0dp"
             >
             <EditText
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
                 style="@style/search"
                 android:id="@+id/search"
                 />
             <Button
                 style="@style/cross_button"
                 android:id="@+id/cross"
+                android:layout_gravity="end"
                 android:visibility="gone"
                 />
-    </LinearLayout>
+    </FrameLayout>
     </androidx.cardview.widget.CardView>
 
     </LinearLayout>

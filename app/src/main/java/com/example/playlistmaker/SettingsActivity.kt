@@ -22,12 +22,11 @@ class SettingsActivity : AppCompatActivity() {
         }
         val buttonHome = findViewById<Button>(R.id.home)
         buttonHome.setOnClickListener {
-            val displayIntent = Intent(this, MainActivity::class.java)
-            startActivity(displayIntent)
+           finish()
         }
         val buttonSupport = findViewById<Button>(R.id.support)
         buttonSupport.setOnClickListener{
-            val message = "Привет, Android-разработка — это круто!"
+            val message = R.string.message
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
             shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("yourEmail@ya.ru"))

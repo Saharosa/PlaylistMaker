@@ -14,6 +14,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 
 class SearchActivity : AppCompatActivity() {
@@ -34,8 +35,7 @@ class SearchActivity : AppCompatActivity() {
             search.requestFocus()
         }
         buttonHome.setOnClickListener(){
-            val displayIntent = Intent(this,MainActivity::class.java)
-            startActivity(displayIntent)
+            finish()
         }
         buttonCross.setOnClickListener(){
             search.setText("")
@@ -48,11 +48,7 @@ class SearchActivity : AppCompatActivity() {
 
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-               if(s.isNullOrEmpty()){
-                    buttonCross.visibility= View.GONE
-                }
-                else buttonCross.visibility=View.VISIBLE
-                searchText = search.text.toString()
+                buttonCross.isVisible = !s.isNullOrEmpty()
             }
 
             override fun afterTextChanged(s: Editable?) {
