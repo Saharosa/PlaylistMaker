@@ -42,6 +42,7 @@
                 android:layout_width="match_parent"
                 style="@style/search"
                 android:id="@+id/search"
+
                 />
             <Button
                 style="@style/cross_button"

@@ -10,4 +10,7 @@
     <string name="ypURL">https://yandex.ru/legal/practicum_offer/</string>
     <string name="adURL">https://practicum.yandex.com/android-developer/</string>
     <string name="message">Привет, Android-разработка — это круто!</string>
+    <string name="mail">klykovskiyt@mail.ru:</string>
+    <string name="share_with">Поделиться через:</string>
+    <string name="message_title">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
 </resources>

@@ -29,8 +29,8 @@ class SettingsActivity : AppCompatActivity() {
             val message = R.string.message
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
-            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("yourEmail@ya.ru"))
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Сообщение разработчикам и разработчицам приложения Playlist Maker")
+            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(R.string.mail))
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT,R.string.message_title)
             shareIntent.putExtra(Intent.EXTRA_TEXT, message)
             startActivity(shareIntent)
         }
@@ -40,7 +40,7 @@ class SettingsActivity : AppCompatActivity() {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, message)
-            startActivity(Intent.createChooser(shareIntent, "Поделиться через:"))
+            startActivity(Intent.createChooser(shareIntent, R.string.share_with.toString()))
         }
         val buttonUserAgreement = findViewById<Button>(R.id.userAgreement)
         buttonUserAgreement.setOnClickListener{
