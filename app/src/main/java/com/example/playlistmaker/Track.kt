@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 data class Track(
     val trackName: String, // Название композиции
@@ -15,8 +16,6 @@ data class Track(
 )
 
 class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    private val dayView: TextView = itemView.findViewById(R.id.day)
-    private val tempView: TextView = itemView.findViewById(R.id.temp)
 
     private val trackName: TextView = itemView.findViewById(R.id.trackName)
     private val artistName: TextView = itemView.findViewById(R.id.artistName)
@@ -27,22 +26,22 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         trackName.text = model.trackName
         artistName.text=model.artistName
         trackTime.text = model.trackTime
-        artistName.text=model.temp.toString()
+        Glide.with(itemView).load(model.artworkUrl100).placeholder(R.drawable.placeholder).centerCrop().into(artworkUrl100)
     }
 }
 
-class WeatherAdapter(private val weather: List<Weather>) : RecyclerView.Adapter<WeatherViewHolder> () {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.weather, parent, false)
-        return WeatherViewHolder(view)
+class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackViewHolder> () {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.track, parent, false)
+        return TrackViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        holder.bind(weather[position])
+    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
+        holder.bind(tracks[position])
     }
 
     override fun getItemCount(): Int {
-        return weather.size
+        return tracks.size
     }
 }
 

@@ -11,4 +11,6 @@
     <dimen name="icon_right_pudding">19dp</dimen>
     <dimen name="margin_horizontal_activity">16dp</dimen>
     <dimen name="margin_vertical_activity">8dp</dimen>
+    <dimen name="low_low_text_size">11sp</dimen>
+    <dimen name="track_author_line">13dp</dimen>
 </resources>

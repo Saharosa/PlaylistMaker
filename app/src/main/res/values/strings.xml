@@ -13,4 +13,7 @@
     <string name="mail">klykovskiyt@mail.ru:</string>
     <string name="share_with">Поделиться через:</string>
     <string name="message_title">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="track_name">Название трека</string>
+    <string name="track_author">автор</string>
+    <string name="track_duratin">Длительность</string>
 </resources>
