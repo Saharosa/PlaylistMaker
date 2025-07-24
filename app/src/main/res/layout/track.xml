@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:id="@+id/artworkUrl100" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            >
+            <TextView
+                android:id="@+id/trackName"
+                style = "@style/track_text"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_marginLeft="8dp"
+                tools:text="Yesterday (Remastered 2009)"
+                android:textSize="16sp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="13dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="1dp">
+                <TextView
+                    android:id="@+id/artistName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    style="@style/track_text_small"
+                    tools:text="sdfgh"
+                    android:textSize="11dp"/>
+                <ImageView
+                    style="@style/iconColor"
+                    android:backgroundTint="@color/white"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:src="@drawable/crop"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/trackTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="11dp"
+                    style="@style/track_text_small"
+                    tools:text="sdfgh"/>
+            </LinearLayout>
+        </LinearLayout>
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/arrow"
+            android:layout_gravity="center"
+            style ="@style/iconColor"
+            />
+    </LinearLayout>
