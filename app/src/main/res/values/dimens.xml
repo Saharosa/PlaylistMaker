@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="horizontal_margin">14dp</dimen>
+    <dimen name="low_margin">14dp</dimen>
+    <dimen name="button_corner">20dp</dimen>
+    <dimen name="icon_pudding">8dp</dimen>
+    <dimen name="avrg_text_size">22sp</dimen>
+    <dimen name="button_height">61dp</dimen>
+    <dimen name="low_text_size">16sp</dimen>
+    <dimen name="padding_activity">16dp</dimen>
+    <dimen name="icon_right_pudding">19dp</dimen>
+    <dimen name="margin_horizontal_activity">16dp</dimen>
+    <dimen name="margin_vertical_activity">8dp</dimen>
+</resources>
