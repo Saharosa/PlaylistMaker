@@ -16,4 +16,9 @@
     <string name="track_name">Название трека</string>
     <string name="track_author">автор</string>
     <string name="track_duratin">Длительность</string>
+    <string name="ItunesURL">https://itunes.apple.com</string>
+    <string name="connection_trouble">Проблемы со связью</string>
+    <string name="try_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="update">Обновить</string>
+    <string name="not_found">Ничего не нашлось</string>
 </resources>

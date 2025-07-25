@@ -34,7 +34,7 @@
        style="@style/top_button"
         android:text="@string/support"
         app:icon = "@drawable/group"
-        android:id="@+id/support"/>
+        android:id="@+id/support" />
     <Button
         android:text="@string/user_agreement"
         app:icon = "@drawable/arrow"
