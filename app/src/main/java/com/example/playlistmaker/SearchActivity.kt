@@ -57,12 +57,6 @@ class SearchActivity : AppCompatActivity() {
         buttonHome.setOnClickListener(){
             finish()
         }
-        buttonCross.setOnClickListener(){
-            search.setText("")
-            searchText=""
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(search.windowToken, 0)
-        }
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -86,23 +80,30 @@ class SearchActivity : AppCompatActivity() {
         val troubleConnection = findViewById<LinearLayout>(R.id.trouble_connection)
         val notFoundError = findViewById<LinearLayout>(R.id.not_found)
         val update = findViewById<Button>(R.id.update)
+        buttonCross.setOnClickListener(){
+            search.setText("")
+            trackList.clear()
+            trackAdapter.notifyDataSetChanged()
+            searchText=""
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(search.windowToken, 0)
+        }
         fun trackSearch(term:String){
             troubleConnection.isVisible=false
             notFoundError.isVisible=false
             itunesService.search(term).enqueue(object:
                 Callback<TrackResponse>{
                 override fun onResponse(call: Call<TrackResponse>,response: Response<TrackResponse>){
-                    if (response.code() == 200) {
+                    if (response.isSuccessful) {
                         trackList.clear()
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            trackList.addAll(response.body()?.results!!)
+                        val results = response.body()?.results
+                        if (results?.isNotEmpty() == true) {
+                            trackList.addAll(results)
                             trackAdapter.notifyDataSetChanged()
                         }
                         if (trackList.isEmpty()) {
                             notFoundError.isVisible = true
                             trackAdapter.notifyDataSetChanged()
-                        } else {
-
                         }
                     } else {
                         troubleConnection.isVisible=true
@@ -110,8 +111,8 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable){
-                    Toast.makeText(this@SearchActivity, t.toString(), Toast.LENGTH_SHORT).show()
-                }
+                    troubleConnection.isVisible=true
+                    failedSearch=term }
             })
 
         }
