@@ -15,33 +15,3 @@ data class Track(
     val artworkUrl100: String // Ссылка на изображение обложки
 )
 
-class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
-    private val trackName: TextView = itemView.findViewById(R.id.trackName)
-    private val artistName: TextView = itemView.findViewById(R.id.artistName)
-    private val trackTime: TextView = itemView.findViewById(R.id.trackTime)
-    private val artworkUrl100: ImageView = itemView.findViewById(R.id.artworkUrl100)
-
-    fun bind(model:Track){
-        trackName.text = model.trackName
-        artistName.text=model.artistName
-        trackTime.text = model.trackTime
-        Glide.with(itemView).load(model.artworkUrl100).placeholder(R.drawable.placeholder).centerCrop().into(artworkUrl100)
-    }
-}
-
-class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackViewHolder> () {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.track, parent, false)
-        return TrackViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
-    }
-
-    override fun getItemCount(): Int {
-        return tracks.size
-    }
-}
-
