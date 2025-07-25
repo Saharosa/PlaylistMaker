@@ -106,11 +106,15 @@ class SearchActivity : AppCompatActivity() {
                             trackAdapter.notifyDataSetChanged()
                         }
                     } else {
-                        troubleConnection.isVisible=true
+                        trackList.clear()
+                        trackAdapter.notifyDataSetChanged()
                         failedSearch=term
+                        troubleConnection.isVisible=true
                     }
                 }
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable){
+                    trackList.clear()
+                    trackAdapter.notifyDataSetChanged()
                     troubleConnection.isVisible=true
                     failedSearch=term }
             })
