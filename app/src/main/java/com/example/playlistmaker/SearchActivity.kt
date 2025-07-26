@@ -27,6 +27,7 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,6 +38,8 @@ import java.util.Stack
 
 var trackHistory = ArrayDeque<Track>()
 
+const val HISTORY_SAVE_KEY = "history_save_key"
+
 class SearchActivity : AppCompatActivity() {
     var searchText=""
     var failedSearch=""
@@ -46,6 +49,8 @@ class SearchActivity : AppCompatActivity() {
         .build()
     val itunesService = retrofit.create(ItunesApi::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
@@ -63,9 +68,9 @@ class SearchActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         val trackList = mutableListOf<Track>()
-        val trackAdapter = TrackAdapter(trackList)
+        val trackAdapter = TrackAdapter(trackList,sharePrefs)
         recyclerView.adapter = trackAdapter
-        val trackAdapterHistory = TrackAdapter(trackHistory)
+        val trackAdapterHistory = TrackAdapter(trackHistory,sharePrefs)
         val textHistory = findViewById<TextView>(R.id.history_text)
         val clearHistory = findViewById<Button>(R.id.clear_history)
         search.setOnFocusChangeListener { _, hasFocus ->
@@ -175,6 +180,14 @@ class SearchActivity : AppCompatActivity() {
             textHistory.isVisible = false
             clearHistory.isVisible = false
         }
+        trackHistory.clear()
+        trackHistory.addAll(Gson().fromJson(sharePrefs.getString(HISTORY_SAVE_KEY,"[]"), Array<Track>::class.java))
+        if (!trackHistory.isNullOrEmpty()){
+            textHistory.isVisible = true
+            clearHistory.isVisible = true
+            trackAdapterHistory.notifyDataSetChanged()
+            recyclerView.adapter = trackAdapterHistory
+        }
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -184,5 +197,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchText = savedInstanceState.getString("searchText","")
+
     }
 }

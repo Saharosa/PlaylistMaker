@@ -19,7 +19,7 @@ const val THEME_KEY = "them_key"
 class SettingsActivity : AppCompatActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-       val sharePerfs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
+       val sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
        setContentView(R.layout.activity_settings)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -58,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
         switchDarkTheme.setOnCheckedChangeListener {switcher, isChecked ->
             if(isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            sharePerfs.edit().putString(THEME_KEY,isChecked.toString()).apply()
+            sharePrefs.edit().putString(THEME_KEY,isChecked.toString()).apply()
         }
         if(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
             switchDarkTheme.isChecked=true

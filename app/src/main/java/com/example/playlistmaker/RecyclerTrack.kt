@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.SharedPreferences
 import android.icu.text.SimpleDateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import java.util.Locale
 
 class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -25,7 +27,7 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     }
 }
 
-class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackViewHolder> () {
+class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) : RecyclerView.Adapter<TrackViewHolder> () {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track, parent, false)
         return TrackViewHolder(view)
@@ -53,6 +55,7 @@ class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<Track
                     trackHistory.addFirst(tracks[position])
                 }
             }
+            prefs.edit().putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)).apply()
         }
     }
 
