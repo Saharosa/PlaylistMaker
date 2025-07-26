@@ -38,6 +38,8 @@
         <item name="iconTint">@color/gray</item>
         <item name="iconGravity">end</item>
         <item name="android:paddingRight">@dimen/icon_right_pudding</item>
+        <item name="trackTint">@color/mist_gray</item>
+        <item  name="thumbTint">@color/gray</item>
     </style>
     <style name="search">
         <item name="android:layout_height">40dp</item>
