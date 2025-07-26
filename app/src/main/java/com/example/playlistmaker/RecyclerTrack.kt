@@ -33,6 +33,27 @@ class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<Track
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
+        holder.itemView.setOnClickListener {
+            var availability = false
+            for (i in trackHistory){
+                if (i.trackId==tracks[position].trackId){
+                    val temp = i
+                    trackHistory.remove(i)
+                    trackHistory.addFirst(temp)
+                    availability=true
+                    break
+                }
+            }
+            if (!availability){
+                if(trackHistory.size<10){
+                    trackHistory.addFirst(tracks[position])
+                }
+                else {
+                    trackHistory.removeLast()
+                    trackHistory.addFirst(tracks[position])
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int {
