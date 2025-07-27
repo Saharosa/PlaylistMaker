@@ -67,6 +67,10 @@
             style="@style/text_error_search"
             android:textSize="19sp"
             android:text="@string/you_were_looking_for"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
@@ -74,13 +78,16 @@
             android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         <Button
-            android:visibility="gone"
+            android:letterSpacing="0"
+            android:padding="0dp"
+            android:visibility="visible"
             android:id="@+id/clear_history"
-            android:layout_width="144dp"
-            android:layout_height="40dp"
+            android:layout_width="148dp"
+            android:layout_height="48dp"
             style ="@style/update_button"
             android:text="@string/clear_history"
             android:layout_marginBottom="20dp"/>
+    </LinearLayout>
     </LinearLayout>
         <LinearLayout
             android:id="@+id/trouble_connection"
