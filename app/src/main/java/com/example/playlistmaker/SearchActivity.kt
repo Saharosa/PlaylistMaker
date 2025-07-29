@@ -1,5 +1,7 @@
 package com.example.playlistmaker
 
+import TrackState
+import TrackState.trackHistory
 import android.app.Activity
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
@@ -36,8 +38,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
 import java.util.Stack
 
-var trackHistory = ArrayDeque<Track>()
-
 const val HISTORY_SAVE_KEY = "history_save_key"
 
 class SearchActivity : AppCompatActivity() {
@@ -70,7 +70,7 @@ class SearchActivity : AppCompatActivity() {
         val trackList = mutableListOf<Track>()
         val trackAdapter = TrackAdapter(trackList,sharePrefs)
         recyclerView.adapter = trackAdapter
-        val trackAdapterHistory = TrackAdapter(trackHistory,sharePrefs)
+        val trackAdapterHistory = TrackAdapter(TrackState.trackHistory,sharePrefs)
         val textHistory = findViewById<TextView>(R.id.history_text)
         val clearHistory = findViewById<Button>(R.id.clear_history)
         search.setOnFocusChangeListener { _, hasFocus ->
