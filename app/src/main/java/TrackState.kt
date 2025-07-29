@@ -1,4 +1,4 @@
-import com.example.playlistmaker.Track
+import Track
 
 object TrackState {
     var trackHistory:ArrayDeque<Track> = ArrayDeque<Track>()
