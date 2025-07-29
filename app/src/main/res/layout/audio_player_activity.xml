@@ -7,13 +7,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/colorPrimary">
 
-    <androidx.constraintlayout.widget.Barrier
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/textsBarrier"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/textsBarrierRight"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="trackCover"
-        app:barrierDirection="start" />
+        />
+
     <Button
+        app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         style = "@style/top_button"
         app:iconGravity = "textStart"
@@ -25,35 +36,40 @@
         app:iconTint="?attr/colorOnPrimary"
         />
 
-    <ImageView
+    <androidx.cardview.widget.CardView
         android:id="@+id/trackCover"
         android:layout_width="312dp"
         android:layout_height="312dp"
-        android:src="@drawable/trackplaceholder"
         app:layout_constraintTop_toBottomOf="@+id/home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="26dp"/>
-
+        app:cardCornerRadius="8dp"
+        android:layout_marginTop="26dp"
+        >
+    <ImageView
+        android:id="@+id/trackCoverImage"
+        android:layout_width="312dp"
+        android:layout_height="312dp"
+        android:src="@drawable/trackplaceholder"
+       />
+    </androidx.cardview.widget.CardView>
     <TextView
-        android:layout_marginStart="24dp"
         android:id="@+id/trackName"
         style="@style/text_error_search"
         android:textSize="22sp"
         android:layout_marginTop="24dp"
         tools:text = "Название трека"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/textsBarrier"
         app:layout_constraintTop_toBottomOf="@id/trackCover"/>
 
     <TextView
-        android:layout_marginStart="24dp"
         android:id="@+id/trackGroup"
         style="@style/text_error_search"
         android:textSize="14sp"
         tools:text="Группа"
         android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/trackName"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="@id/textsBarrier"/>
 
     <ImageButton
         android:layout_width="51dp"
@@ -71,21 +87,20 @@
         android:id="@+id/play"
         android:layout_width="83.3dp"
         android:layout_height="83.3dp"
-        app:layout_constraintStart_toEndOf="@id/add_list"
+        app:layout_constraintStart_toStartOf="@id/textsBarrier"
+        app:layout_constraintEnd_toEndOf="@id/textsBarrierRight"
         app:layout_constraintTop_toBottomOf="@id/trackGroup"
         android:background="@drawable/pause"
         android:layout_marginTop="38.3dp"
         android:src="@drawable/pause"
-        android:layout_marginStart="63.33dp"
         app:tint="?attr/colorOnPrimary"
         />
 
     <ImageButton
-        android:layout_marginStart="63.33dp"
         android:layout_width="51dp"
         android:layout_height="51dp"
         app:layout_constraintTop_toBottomOf="@id/trackGroup"
-        app:layout_constraintStart_toEndOf="@id/play"
+        app:layout_constraintEnd_toEndOf="@id/textsBarrierRight"
         android:background="@drawable/round_button"
         android:src="@drawable/heart_no_active"
         android:layout_marginTop="54dp"
@@ -182,7 +197,6 @@
         />
 
     <TextView
-        app:layout_constrainedWidth="true"
         android:id="@+id/country"
         style="@style/track_dataM"
         android:layout_marginTop="18dp"

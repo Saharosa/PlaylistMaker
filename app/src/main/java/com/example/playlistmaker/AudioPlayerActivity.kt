@@ -57,7 +57,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
         genre.text = currentTrack.primaryGenreName
         country.text= currentTrack.country
-        val cover = findViewById<ImageView>(R.id.trackCover)
+        val cover = findViewById<ImageView>(R.id.trackCoverImage)
         Glide.with(this).load(currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")).placeholder(R.drawable.placeholder).centerCrop().into(cover)
         }
 
