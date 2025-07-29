@@ -107,4 +107,28 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
+    <style name="track_data">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="android:layout_marginBottom">18dp</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+    </style>
+    <style name="track_dataM">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="android:layout_marginBottom">18dp</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+    </style>
+    <style name="roundButtons">
+        <item name="android:backgroundTint">#c5c6c7</item>
+    </style>
 </resources>
