@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.SharedPreferences
 import android.icu.text.SimpleDateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import java.util.Locale
 
 class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -25,7 +27,7 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     }
 }
 
-class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackViewHolder> () {
+class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) : RecyclerView.Adapter<TrackViewHolder> () {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track, parent, false)
         return TrackViewHolder(view)
@@ -33,6 +35,28 @@ class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<Track
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
+        holder.itemView.setOnClickListener {
+            var availability = false
+            for (i in trackHistory){
+                if (i.trackId==tracks[position].trackId){
+                    val temp = i
+                    trackHistory.remove(i)
+                    trackHistory.addFirst(temp)
+                    availability=true
+                    break
+                }
+            }
+            if (!availability){
+                if(trackHistory.size<10){
+                    trackHistory.addFirst(tracks[position])
+                }
+                else {
+                    trackHistory.removeLast()
+                    trackHistory.addFirst(tracks[position])
+                }
+            }
+            prefs.edit().putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)).apply()
+        }
     }
 
     override fun getItemCount(): Int {
