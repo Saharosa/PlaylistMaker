@@ -1,7 +1,6 @@
 package com.example.playlistmaker
 
-import Track
-import TrackState.trackHistory
+
 import android.content.Intent
 import android.content.SharedPreferences
 import android.icu.text.SimpleDateFormat
@@ -13,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.TrackState.trackHistory
 import com.google.gson.Gson
 import java.util.Locale
 

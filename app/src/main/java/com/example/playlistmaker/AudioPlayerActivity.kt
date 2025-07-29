@@ -1,6 +1,5 @@
 package com.example.playlistmaker
 
-import TrackState.currentTrack
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.media.Image
@@ -16,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.TrackState.currentTrack
 import org.w3c.dom.Text
 import java.util.Locale
 

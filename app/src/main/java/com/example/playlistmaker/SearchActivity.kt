@@ -1,8 +1,6 @@
 package com.example.playlistmaker
 
-import Track
-import TrackState
-import TrackState.trackHistory
+
 import android.app.Activity
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
@@ -30,6 +28,7 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.TrackState.trackHistory
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -170,11 +169,11 @@ class SearchActivity : AppCompatActivity() {
         }
         search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    trackSearch(search.text.toString())
-                    true
+                trackSearch(search.text.toString())
+                true
             }
-        false
-    }
+            false
+        }
         clearHistory.setOnClickListener{
             trackHistory.clear()
             trackAdapterHistory.notifyDataSetChanged()
@@ -193,7 +192,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("searchText",searchText)
-       }
+    }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
