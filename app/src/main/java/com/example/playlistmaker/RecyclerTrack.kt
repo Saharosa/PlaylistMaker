@@ -61,9 +61,6 @@ class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) 
                 }
             }
             prefs.edit().putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)).apply()
-
-
-            Toast.makeText(holder.itemView.context, tracks[position].trackName.toString(), Toast.LENGTH_SHORT).show()
             val displayIntent = Intent(holder.itemView.context, AudioPlayerActivity::class.java)
             holder.itemView.context.startActivity(displayIntent)
         }
