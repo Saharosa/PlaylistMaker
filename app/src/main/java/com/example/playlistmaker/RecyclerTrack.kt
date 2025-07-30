@@ -40,6 +40,7 @@ class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
+            TrackState.currentTrack=tracks[position]
             var availability = false
             for (i in trackHistory){
                 if (i.trackId==tracks[position].trackId){
@@ -60,7 +61,9 @@ class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) 
                 }
             }
             prefs.edit().putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)).apply()
-            TrackState.currentTrack=tracks[position]
+
+
+            Toast.makeText(holder.itemView.context, tracks[position].trackName.toString(), Toast.LENGTH_SHORT).show()
             val displayIntent = Intent(holder.itemView.context, AudioPlayerActivity::class.java)
             holder.itemView.context.startActivity(displayIntent)
         }
