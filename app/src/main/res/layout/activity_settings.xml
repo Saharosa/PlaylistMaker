@@ -19,12 +19,16 @@
         android:layout_marginBottom="20dp"
         android:id="@+id/home"
         />
-        <Switch
-            android:text="@string/dark_theme"
-            style="@style/top_button"
-            android:paddingRight="6dp"
-            android:id="@+id/dark_theme"
-            />
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/themeSwitcher"
+        android:text="Темная тема"
+        style="@style/top_button"
+        android:paddingRight="10dp"
+        android:layout_gravity="start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        />
     <Button
         style="@style/top_button"
         android:text="@string/sharing"
@@ -34,7 +38,7 @@
        style="@style/top_button"
         android:text="@string/support"
         app:icon = "@drawable/group"
-        android:id="@+id/support"/>
+        android:id="@+id/support" />
     <Button
         android:text="@string/user_agreement"
         app:icon = "@drawable/arrow"

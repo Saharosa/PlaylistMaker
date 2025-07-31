@@ -13,4 +13,19 @@
     <string name="mail">klykovskiyt@mail.ru:</string>
     <string name="share_with">Поделиться через:</string>
     <string name="message_title">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="track_name">Название трека</string>
+    <string name="track_author">автор</string>
+    <string name="track_duratin">Длительность</string>
+    <string name="ItunesURL">https://itunes.apple.com</string>
+    <string name="connection_trouble">Проблемы со связью</string>
+    <string name="try_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="update">Обновить</string>
+    <string name="not_found">Ничего не нашлось</string>
+    <string name="clear_history">Очистить историю</string>
+    <string name="you_were_looking_for">Вы искали</string>
+    <string name="duration">Длительность</string>
+    <string name="albom">Альбом</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
 </resources>
