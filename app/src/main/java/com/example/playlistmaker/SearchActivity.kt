@@ -29,7 +29,6 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.playlistmaker.TrackState.trackHistory
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -41,7 +40,9 @@ import java.util.Stack
 
 const val HISTORY_SAVE_KEY = "history_save_key"
 
-class SearchActivity : AppCompatActivity() {
+val trackHistory:ArrayDeque<Track> = ArrayDeque<Track>()
+
+class SearchActivity : AppCompatActivity(),OnItemClickListener {
     var searchText=""
     var failedSearch=""
     val retrofit = Retrofit.Builder()
@@ -57,7 +58,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val itunesService = retrofit.create(ItunesApi::class.java)
         sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
-         trackAdapterHistory = TrackAdapter(TrackState.trackHistory,sharePrefs)
+         trackAdapterHistory = TrackAdapter(trackHistory,sharePrefs,this)
        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
@@ -75,7 +76,7 @@ class SearchActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         val trackList = mutableListOf<Track>()
-        val trackAdapter = TrackAdapter(trackList,sharePrefs)
+        val trackAdapter = TrackAdapter(trackList,sharePrefs,this)
         recyclerView.adapter = trackAdapter
         val textHistory = findViewById<TextView>(R.id.history_text)
         val clearHistory = findViewById<Button>(R.id.clear_history)
@@ -204,5 +205,33 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         searchText = savedInstanceState.getString("searchText","")
 
+    }
+
+    override fun onItemClick( tracks: List<Track>, position: Int,prefs:SharedPreferences) {
+        val currentTrack=tracks[position]
+        var availability = false
+        for (i in trackHistory){
+            if (i.trackId==tracks[position].trackId){
+                val temp = i
+                trackHistory.remove(i)
+                trackHistory.addFirst(temp)
+                availability=true
+                break
+            }
+        }
+        if (!availability){
+            if(trackHistory.size<10){
+                trackHistory.addFirst(tracks[position])
+            }
+            else {
+                trackHistory.removeLast()
+                trackHistory.addFirst(tracks[position])
+            }
+        }
+        prefs.edit().putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)).apply()
+        val displayIntent = Intent(this, AudioPlayerActivity::class.java).apply{
+            putExtra("current_track", currentTrack)
+        }
+        startActivity(displayIntent)
     }
 }

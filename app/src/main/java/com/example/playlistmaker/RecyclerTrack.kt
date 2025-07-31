@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.playlistmaker.TrackState.trackHistory
 import com.google.gson.Gson
 import java.util.Locale
 
@@ -31,7 +30,11 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     }
 }
 
-class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) : RecyclerView.Adapter<TrackViewHolder> () {
+interface OnItemClickListener{
+    fun onItemClick( tracks: List<Track>, position: Int,prefs:SharedPreferences)
+}
+
+class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences, val listener: OnItemClickListener) : RecyclerView.Adapter<TrackViewHolder> (){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track, parent, false)
         return TrackViewHolder(view)
@@ -40,29 +43,7 @@ class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
-            TrackState.currentTrack=tracks[position]
-            var availability = false
-            for (i in trackHistory){
-                if (i.trackId==tracks[position].trackId){
-                    val temp = i
-                    trackHistory.remove(i)
-                    trackHistory.addFirst(temp)
-                    availability=true
-                    break
-                }
-            }
-            if (!availability){
-                if(trackHistory.size<10){
-                    trackHistory.addFirst(tracks[position])
-                }
-                else {
-                    trackHistory.removeLast()
-                    trackHistory.addFirst(tracks[position])
-                }
-            }
-            prefs.edit().putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)).apply()
-            val displayIntent = Intent(holder.itemView.context, AudioPlayerActivity::class.java)
-            holder.itemView.context.startActivity(displayIntent)
+            listener.onItemClick(tracks,position,prefs)
         }
     }
 

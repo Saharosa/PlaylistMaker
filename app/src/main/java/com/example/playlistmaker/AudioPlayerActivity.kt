@@ -15,7 +15,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import com.example.playlistmaker.TrackState.currentTrack
 import org.w3c.dom.Text
 import java.util.Locale
 
@@ -23,6 +22,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val currentTrack = intent.getParcelableExtra<Track>("current_track")
         setContentView(R.layout.audio_player_activity)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -42,7 +42,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         val text_year = findViewById<TextView>(R.id.text_year)
         val genre = findViewById<TextView>(R.id.genre)
         val country = findViewById<TextView>(R.id.country)
-        name.text= currentTrack.trackName
+        name.text= currentTrack!!.trackName
         group.text= currentTrack.artistName
         duration.text= SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTrack.trackTimeMillis)
         if (!currentTrack.collectionName.isNullOrEmpty()) albom.text = currentTrack.collectionName
