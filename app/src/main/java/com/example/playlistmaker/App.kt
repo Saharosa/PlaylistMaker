@@ -12,4 +12,5 @@ class App : Application() {
         else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate()
     }
+
 }

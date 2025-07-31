@@ -1,9 +1,11 @@
 package com.example.playlistmaker
 
+
 import android.app.Activity
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.text.Editable
@@ -27,6 +29,7 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.TrackState.trackHistory
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,8 +38,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
 import java.util.Stack
-
-var trackHistory = ArrayDeque<Track>()
 
 const val HISTORY_SAVE_KEY = "history_save_key"
 
@@ -47,11 +48,17 @@ class SearchActivity : AppCompatActivity() {
         .baseUrl("https://itunes.apple.com")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    val itunesService = retrofit.create(ItunesApi::class.java)
+    lateinit var sharePrefs:SharedPreferences
+    lateinit var trackAdapterHistory:TrackAdapter
+    override fun onResume(){
+        super.onResume()
+        trackAdapterHistory.notifyDataSetChanged()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
-        super.onCreate(savedInstanceState)
+        val itunesService = retrofit.create(ItunesApi::class.java)
+        sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
+         trackAdapterHistory = TrackAdapter(TrackState.trackHistory,sharePrefs)
+       super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -70,7 +77,6 @@ class SearchActivity : AppCompatActivity() {
         val trackList = mutableListOf<Track>()
         val trackAdapter = TrackAdapter(trackList,sharePrefs)
         recyclerView.adapter = trackAdapter
-        val trackAdapterHistory = TrackAdapter(trackHistory,sharePrefs)
         val textHistory = findViewById<TextView>(R.id.history_text)
         val clearHistory = findViewById<Button>(R.id.clear_history)
         search.setOnFocusChangeListener { _, hasFocus ->
@@ -169,11 +175,11 @@ class SearchActivity : AppCompatActivity() {
         }
         search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    trackSearch(search.text.toString())
-                    true
+                trackSearch(search.text.toString())
+                true
             }
-        false
-    }
+            false
+        }
         clearHistory.setOnClickListener{
             trackHistory.clear()
             trackAdapterHistory.notifyDataSetChanged()
@@ -192,7 +198,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("searchText",searchText)
-       }
+    }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)

@@ -1,5 +1,7 @@
 package com.example.playlistmaker
 
+
+import android.content.Intent
 import android.content.SharedPreferences
 import android.icu.text.SimpleDateFormat
 import android.view.LayoutInflater
@@ -7,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.TrackState.trackHistory
 import com.google.gson.Gson
 import java.util.Locale
 
@@ -22,7 +26,7 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     fun bind(model:Track){
         trackName.text = model.trackName
         artistName.text=model.artistName
-        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis.toLong())
+        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
         Glide.with(itemView).load(model.artworkUrl100).placeholder(R.drawable.placeholder).centerCrop().into(artworkUrl100)
     }
 }
@@ -36,6 +40,7 @@ class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
+            TrackState.currentTrack=tracks[position]
             var availability = false
             for (i in trackHistory){
                 if (i.trackId==tracks[position].trackId){
@@ -56,6 +61,8 @@ class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences) 
                 }
             }
             prefs.edit().putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)).apply()
+            val displayIntent = Intent(holder.itemView.context, AudioPlayerActivity::class.java)
+            holder.itemView.context.startActivity(displayIntent)
         }
     }
 
