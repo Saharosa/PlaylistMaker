@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
@@ -37,6 +38,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
 import java.util.Stack
+import androidx.core.content.edit
 
 const val HISTORY_SAVE_KEY = "history_save_key"
 
@@ -51,10 +53,12 @@ class SearchActivity : AppCompatActivity(),OnItemClickListener {
         .build()
     lateinit var sharePrefs:SharedPreferences
     lateinit var trackAdapterHistory:TrackAdapter
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume(){
         super.onResume()
         trackAdapterHistory.notifyDataSetChanged()
     }
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         val itunesService = retrofit.create(ItunesApi::class.java)
         sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
@@ -177,12 +181,13 @@ class SearchActivity : AppCompatActivity(),OnItemClickListener {
         search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 trackSearch(search.text.toString())
-                true
             }
             false
         }
         clearHistory.setOnClickListener{
             trackHistory.clear()
+            super.onDestroy()
+            sharePrefs.edit { putString(HISTORY_SAVE_KEY, "[]") }
             trackAdapterHistory.notifyDataSetChanged()
             textHistory.isVisible = false
             clearHistory.isVisible = false
@@ -206,7 +211,6 @@ class SearchActivity : AppCompatActivity(),OnItemClickListener {
         searchText = savedInstanceState.getString("searchText","")
 
     }
-
     override fun onItemClick( tracks: List<Track>, position: Int,prefs:SharedPreferences) {
         val currentTrack=tracks[position]
         var availability = false
@@ -228,7 +232,7 @@ class SearchActivity : AppCompatActivity(),OnItemClickListener {
                 trackHistory.addFirst(tracks[position])
             }
         }
-        prefs.edit().putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)).apply()
+        prefs.edit { putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)) }
         val displayIntent = Intent(this, AudioPlayerActivity::class.java).apply{
             putExtra("current_track", currentTrack)
         }
