@@ -16,6 +16,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -97,6 +99,7 @@ class SearchActivity : AppCompatActivity(),OnItemClickListener {
         recyclerView.adapter = trackAdapter
         val textHistory = findViewById<TextView>(R.id.history_text)
         val clearHistory = findViewById<Button>(R.id.clear_history)
+
         search.setOnFocusChangeListener { _, hasFocus ->
             if (search.hasFocus() && search.text.toString() == "" && trackHistory.isNotEmpty()) {
                 textHistory.isVisible = true
@@ -210,7 +213,6 @@ class SearchActivity : AppCompatActivity(),OnItemClickListener {
         }
         clearHistory.setOnClickListener{
             trackHistory.clear()
-            super.onDestroy()
             sharePrefs.edit { putString(HISTORY_SAVE_KEY, "[]") }
             trackAdapterHistory.notifyDataSetChanged()
             textHistory.isVisible = false
