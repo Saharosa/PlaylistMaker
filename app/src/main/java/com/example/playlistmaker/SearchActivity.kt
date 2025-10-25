@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +71,7 @@ class SearchActivity : AppCompatActivity(),OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         val itunesService = retrofit.create(ItunesApi::class.java)
         sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
-         trackAdapterHistory = TrackAdapter(trackHistory,sharePrefs,this)
+        trackAdapterHistory = TrackAdapter(trackHistory,sharePrefs,this)
        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
@@ -171,18 +172,20 @@ class SearchActivity : AppCompatActivity(),OnItemClickListener {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.d("Вызов поиска","Поиск")
                 buttonCross.isVisible = !s.isNullOrEmpty()
-                searchDebounce()
                 if (search.hasFocus() && search.text.toString() == "" && trackHistory.isNotEmpty()) {
                     textHistory.isVisible = true
                     clearHistory.isVisible = true
                     trackAdapterHistory.notifyDataSetChanged()
                     recyclerView.adapter = trackAdapterHistory
+
                 }
-                else {
+                else if (search.hasFocus() && search.text.toString() != ""){
                     textHistory.isVisible = false
                     clearHistory.isVisible = false
                     recyclerView.adapter = trackAdapter
+                    searchDebounce()
                 }
             }
 

@@ -91,8 +91,8 @@
         app:layout_constraintEnd_toEndOf="@id/textsBarrierRight"
         app:layout_constraintTop_toBottomOf="@id/trackGroup"
         android:background="@drawable/pause"
-        android:layout_marginTop="38.3dp"
         android:src="@drawable/pause"
+        android:layout_marginTop="38.3dp"
         app:tint="?attr/colorOnPrimary"
         />
 
@@ -127,6 +127,7 @@
         android:layout_marginTop="30dp"
         android:text="@string/duration"
         app:layout_constraintTop_toBottomOf="@id/timer"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
     <TextView
@@ -135,6 +136,7 @@
         android:layout_marginTop="18dp"
         android:text="@string/albom"
         app:layout_constraintTop_toBottomOf="@id/text_duration"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
     <TextView
@@ -143,6 +145,7 @@
         android:layout_marginTop="18dp"
         android:text="@string/year"
         app:layout_constraintTop_toBottomOf="@id/text_albom"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
     <TextView
@@ -151,6 +154,7 @@
         android:layout_marginTop="18dp"
         android:text="@string/genre"
         app:layout_constraintTop_toBottomOf="@id/text_year"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
     <TextView
@@ -159,9 +163,9 @@
         android:layout_marginTop="18dp"
         android:text="@string/country"
         app:layout_constraintTop_toBottomOf="@id/text_genre"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
-    ///////////////////////
 
     <TextView
         android:id="@+id/duration"
@@ -169,6 +173,7 @@
         android:layout_marginTop="30dp"
         android:text="@string/duration"
         app:layout_constraintTop_toBottomOf="@id/timer"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
     <TextView
@@ -177,6 +182,7 @@
         android:layout_marginTop="18dp"
         android:text="@string/albom"
         app:layout_constraintTop_toBottomOf="@id/duration"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
     <TextView
@@ -185,6 +191,7 @@
         android:layout_marginTop="18dp"
         android:text="@string/year"
         app:layout_constraintTop_toBottomOf="@id/albom"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
     <TextView
@@ -194,6 +201,7 @@
         android:layout_marginTop="18dp"
         android:text="2"
         app:layout_constraintTop_toBottomOf="@id/year"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
     <TextView
@@ -202,6 +210,7 @@
         android:layout_marginTop="18dp"
         android:text="@string/country"
         app:layout_constraintTop_toBottomOf="@id/genre"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
