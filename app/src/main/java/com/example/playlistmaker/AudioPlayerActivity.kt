@@ -44,7 +44,8 @@ class AudioPlayerActivity : AppCompatActivity() {
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            playButton.setBackgroundResource(R.drawable.play)
+            playButton.setBackgroundResource(R.drawable.pause)
+            playButton.setImageResource(R.drawable.pause)
             playerState = STATE_PREPARED
         }
     }
@@ -99,10 +100,6 @@ class AudioPlayerActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-        }
-        mediaPlayer.setOnCompletionListener{
-            playButton.setBackgroundResource(R.drawable.play)
-            playButton.setImageResource(R.drawable.play)
         }
         val home = findViewById<Button>(R.id.home)
         home.setOnClickListener{
@@ -167,10 +164,17 @@ class AudioPlayerActivity : AppCompatActivity() {
                 val seconds = elapsedTime / 1000
                 val minutes = seconds / 60
                 val secs = seconds % 60
-                if (playerState==2)
+                if (playerState==2){
+                    stopwatch?.text = String.format("%d:%02d", minutes, secs)
                 mainThreadHandler?.postDelayed(this, DELAY)
-                else timePause = System.currentTimeMillis()
-                stopwatch?.text = String.format("%d:%02d", minutes, secs)
+                }
+                else if (playerState == STATE_PREPARED) {
+                    stopwatch.text = "0:00"
+                    Log.d("OKKOKOKOKO", "00000")
+                }
+                else
+                    timePause = System.currentTimeMillis()
+
             }
         }
     }
