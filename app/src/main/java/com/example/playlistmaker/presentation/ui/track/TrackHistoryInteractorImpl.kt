@@ -1,16 +1,17 @@
 package com.example.playlistmaker.presentation.ui.track
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.edit
 import com.example.playlistmaker.domain.Track
 import com.example.playlistmaker.domain.api.HistoryInteractor
-import com.example.playlistmaker.presentation.ui.search.HISTORY_SAVE_KEY
+import com.example.playlistmaker.domain.api.TrackHistoryRepository
 import com.google.gson.Gson
 
-class TrackHistoryInteractorImpl(private val sharePrefs: SharedPreferences):HistoryInteractor{
-    private val trackHistoryList:ArrayDeque<Track> =ArrayDeque()
-    override fun getHistory():List<Track>{
+
+class TrackHistoryInteractorImpl(val repository: TrackHistoryRepository):HistoryInteractor{
+    private val trackHistoryList: ArrayDeque<Track> =ArrayDeque<Track>()
+
+    override fun getHistory():ArrayDeque<Track>{
         return trackHistoryList
     }
     override fun isNotEmpty():Boolean{
@@ -43,10 +44,10 @@ class TrackHistoryInteractorImpl(private val sharePrefs: SharedPreferences):Hist
         return false
     }
     override fun loadHistory(){
-        trackHistoryList.addAll(Gson().fromJson(sharePrefs.getString(HISTORY_SAVE_KEY,"[]"), Array<Track>::class.java))
+        trackHistoryList.addAll(repository.loadHistory())
     }
 
     override fun saveHistory() {
-        sharePrefs.edit { putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistoryList)) }
+        repository.saveHistory(trackHistoryList)
     }
 }

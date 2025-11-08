@@ -40,16 +40,13 @@ import com.example.playlistmaker.data.dto.TrackDto
 import com.example.playlistmaker.domain.Track
 import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.data.dto.TrackSearchRequest
+import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.presentation.ui.settings.PLAY_LIST_MAKER
 import com.example.playlistmaker.presentation.ui.track.AudioPlayerActivity
 import com.example.playlistmaker.presentation.ui.track.OnItemClickListener
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
 import com.example.playlistmaker.presentation.ui.track.TrackHistoryInteractorImpl
-
-const val HISTORY_SAVE_KEY = "history_save_key"
-
-
 
 class SearchActivity : AppCompatActivity(), OnItemClickListener {
     companion object {
@@ -65,7 +62,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         .build()
     lateinit var sharePrefs:SharedPreferences
     lateinit var trackAdapterHistory: TrackAdapter
-    lateinit var trackHistory: TrackHistoryInteractorImpl
+    lateinit var trackHistory: HistoryInteractor
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume(){
         super.onResume()
@@ -76,8 +73,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         val itunesService = retrofit.create(ItunesApi::class.java)
         val interactor = Creator.provideTracksInteractor()
         sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
-        trackHistory = TrackHistoryInteractorImpl(sharePrefs)
-        trackHistory.getHistory()
+        trackHistory = Creator.provideHistoryInteractor(sharePrefs)
         trackAdapterHistory = TrackAdapter(trackHistory.getHistory(),sharePrefs,this)
        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -223,7 +219,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         }
         clearHistory.setOnClickListener{
             trackHistory.clear()
-            sharePrefs.edit { putString(HISTORY_SAVE_KEY, "[]") }
+            trackHistory.saveHistory()
             trackAdapterHistory.notifyDataSetChanged()
             textHistory.isVisible = false
             clearHistory.isVisible = false

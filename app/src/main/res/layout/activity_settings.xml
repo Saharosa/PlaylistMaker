@@ -8,8 +8,7 @@
     android:id="@+id/settings"
     android:background="?attr/colorPrimary">
     <Button
-        style = "@style/top_button"
-
+        style = "@style/top_button_sett"
         app:iconGravity = "textStart"
         android:text="@string/settings"
         android:fontFamily="@font/ys_display_medium"
