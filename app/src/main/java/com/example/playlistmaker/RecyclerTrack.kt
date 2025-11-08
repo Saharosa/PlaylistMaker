@@ -4,6 +4,9 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.content.SharedPreferences
 import android.icu.text.SimpleDateFormat
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import java.util.Locale
+
+private const val CLICK_DEBOUNCE_DELAY = 1000L
+
+private var isClickAllowed = true
+
+private val handler = Handler(Looper.getMainLooper())
 
 class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -43,7 +52,11 @@ class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences, 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
-            listener.onItemClick(tracks,position,prefs)
+            if(clickDebounce()) {
+                Log.d("click", "нажато")
+                listener.onItemClick(tracks, position, prefs)
+            }
+            else  Log.d("click", "низя")
         }
     }
 
@@ -52,3 +65,11 @@ class TrackAdapter(private val tracks: List<Track>,val prefs:SharedPreferences, 
     }
 }
 
+private fun clickDebounce() : Boolean {
+    val current = isClickAllowed
+    if (isClickAllowed) {
+        isClickAllowed = false
+        handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+    }
+    return current
+}
