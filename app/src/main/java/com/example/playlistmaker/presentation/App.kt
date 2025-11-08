@@ -2,8 +2,8 @@ package com.example.playlistmaker.presentation
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.ui.settings.PLAY_LIST_MAKER
-import com.example.playlistmaker.ui.settings.THEME_KEY
+import com.example.playlistmaker.presentation.ui.settings.PLAY_LIST_MAKER
+import com.example.playlistmaker.presentation.ui.settings.THEME_KEY
 
 class App : Application() {
 

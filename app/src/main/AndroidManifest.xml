@@ -12,16 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PlaylistMaker">
-        <activity android:name=".ui.track.AudioPlayerActivity"
+        <activity android:name=".presentation.ui.track.AudioPlayerActivity"
             android:exported="false"/>
         <activity
-            android:name=".ui.search.SearchActivity"
+            android:name=".presentation.ui.search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.media.MediaActivity"
+            android:name=".presentation.ui.media.MediaActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".presentation.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".presentation.ui.settings.SettingsActivity"
             android:exported="false" />
     </application>
 

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.search
+package com.example.playlistmaker.presentation.ui.search
 
 
 import android.annotation.SuppressLint
@@ -41,10 +41,10 @@ import com.example.playlistmaker.domain.Track
 import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.data.dto.TrackSearchRequest
 import com.example.playlistmaker.domain.api.TrackInteractor
-import com.example.playlistmaker.ui.settings.PLAY_LIST_MAKER
-import com.example.playlistmaker.ui.track.AudioPlayerActivity
-import com.example.playlistmaker.ui.track.OnItemClickListener
-import com.example.playlistmaker.ui.track.TrackAdapter
+import com.example.playlistmaker.presentation.ui.settings.PLAY_LIST_MAKER
+import com.example.playlistmaker.presentation.ui.track.AudioPlayerActivity
+import com.example.playlistmaker.presentation.ui.track.OnItemClickListener
+import com.example.playlistmaker.presentation.ui.track.TrackAdapter
 
 const val HISTORY_SAVE_KEY = "history_save_key"
 
