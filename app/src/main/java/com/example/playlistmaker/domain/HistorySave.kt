@@ -1,7 +1,7 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.domain
 
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+import com.example.playlistmaker.ui.search.HISTORY_SAVE_KEY
 import com.google.gson.Gson
 
 class HistorySave {
