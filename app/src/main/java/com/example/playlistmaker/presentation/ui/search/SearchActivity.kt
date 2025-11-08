@@ -45,10 +45,11 @@ import com.example.playlistmaker.presentation.ui.settings.PLAY_LIST_MAKER
 import com.example.playlistmaker.presentation.ui.track.AudioPlayerActivity
 import com.example.playlistmaker.presentation.ui.track.OnItemClickListener
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
+import com.example.playlistmaker.presentation.ui.track.TrackHistoryInteractorImpl
 
 const val HISTORY_SAVE_KEY = "history_save_key"
 
-val trackHistory:ArrayDeque<Track> = ArrayDeque<Track>()
+
 
 class SearchActivity : AppCompatActivity(), OnItemClickListener {
     companion object {
@@ -64,6 +65,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         .build()
     lateinit var sharePrefs:SharedPreferences
     lateinit var trackAdapterHistory: TrackAdapter
+    lateinit var trackHistory: TrackHistoryInteractorImpl
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume(){
         super.onResume()
@@ -74,7 +76,9 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         val itunesService = retrofit.create(ItunesApi::class.java)
         val interactor = Creator.provideTracksInteractor()
         sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
-        trackAdapterHistory = TrackAdapter(trackHistory,sharePrefs,this)
+        trackHistory = TrackHistoryInteractorImpl(sharePrefs)
+        trackHistory.getHistory()
+        trackAdapterHistory = TrackAdapter(trackHistory.getHistory(),sharePrefs,this)
        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
@@ -121,17 +125,13 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
                 interactor.searchTrack(term, object : TrackInteractor.TrackConsumer {
                     override fun consume(result: Pair<List<Track>, Int>) {
                         handler.post {
-                            Log.d("DEBUGTRACK", "startSearching")
                             trackList.addAll(result.first)
                             val responseCode = result.second
-                            Log.d("DEBUGTRACK", "keepSearching")
                             if (result.second == 200) {
                                 if (result.first.isNotEmpty()) {
                                     trackList.clear()
-                                    Log.d("DEBUGTRACK", "trackList.clear()")
                                     trackList.addAll(result.first)
                                     trackAdapter.notifyDataSetChanged()
-                                    Log.d("DEBUG", "TrackInList")
                                     if (trackList.isEmpty()) {
                                         notFoundError.isVisible = true
                                         textHistory.isVisible = false
@@ -152,9 +152,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
                                 }
                             }
                             if (result.second != 200) {
-                                Log.d("DEBUGTRACK", result.second.toString())
                                 trackList.clear()
-                                Log.d("DEBUGTRACK", "12454t53ytegdfsd")
                                 trackAdapter.notifyDataSetChanged()
                                 troubleConnection.isVisible = true
                                 textHistory.isVisible = false
@@ -185,7 +183,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("Вызов поиска","Поиск")
                 buttonCross.isVisible = !s.isNullOrEmpty()
                 if (search.hasFocus() && search.text.toString() == "" && trackHistory.isNotEmpty()) {
                     textHistory.isVisible = true
@@ -232,7 +229,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
             clearHistory.isVisible = false
         }
         trackHistory.clear()
-        trackHistory.addAll(Gson().fromJson(sharePrefs.getString(HISTORY_SAVE_KEY,"[]"), Array<Track>::class.java))
+        trackHistory.loadHistory()
         if (!trackHistory.isNullOrEmpty()){
             textHistory.isVisible = true
             clearHistory.isVisible = true
@@ -252,26 +249,11 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
     }
     override fun onItemClick(tracks: List<Track>, position: Int, prefs:SharedPreferences) {
         val currentTrack=tracks[position]
-        var availability = false
-        for (i in trackHistory){
-            if (i.trackId==tracks[position].trackId){
-                val temp = i
-                trackHistory.remove(i)
-                trackHistory.addFirst(temp)
-                availability=true
-                break
-            }
-        }
+        var availability = trackHistory.checkAvailability(tracks[position])
         if (!availability){
-            if(trackHistory.size<10){
-                trackHistory.addFirst(tracks[position])
-            }
-            else {
-                trackHistory.removeLast()
-                trackHistory.addFirst(tracks[position])
-            }
+            trackHistory.addElement(tracks[position])
         }
-        prefs.edit { putString(HISTORY_SAVE_KEY, Gson().toJson(trackHistory)) }
+        trackHistory.saveHistory()
         val displayIntent = Intent(this, AudioPlayerActivity::class.java).apply{
             putExtra("current_track", currentTrack)
         }
