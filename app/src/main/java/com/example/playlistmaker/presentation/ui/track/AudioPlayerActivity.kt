@@ -1,26 +1,23 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.track
 
-import android.content.Intent
 import android.icu.text.SimpleDateFormat
-import android.media.Image
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import org.w3c.dom.Text
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.Track
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -138,7 +135,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         genre.text = currentTrack.primaryGenreName
         country.text= currentTrack.country
         val cover = findViewById<ImageView>(R.id.trackCoverImage)
-        Glide.with(this).load(currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")).placeholder(R.drawable.placeholder).centerCrop().into(cover)
+        Glide.with(this).load(currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")).placeholder(
+            R.drawable.placeholder
+        ).centerCrop().into(cover)
         preparePlayer()
         Log.d("Create", "конец onCreate()")
     }
