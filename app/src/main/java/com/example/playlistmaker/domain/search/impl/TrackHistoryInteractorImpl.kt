@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.domain.search.impl
 
 import com.example.playlistmaker.domain.track.Track
 import com.example.playlistmaker.domain.search.api.HistoryInteractor

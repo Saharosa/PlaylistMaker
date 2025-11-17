@@ -1,12 +1,16 @@
 package com.example.playlistmaker.creator
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.example.playlistmaker.data.impl.sharedPrefsRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackHistoryRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
-import com.example.playlistmaker.domain.impl.TrackHistoryInteractorImpl
-import com.example.playlistmaker.domain.impl.TrackInteractorImpl
+import com.example.playlistmaker.domain.api.sharedPrefsRepository
+import com.example.playlistmaker.domain.impl.sharedPrefsInteractorImpl
+import com.example.playlistmaker.domain.search.impl.TrackHistoryInteractorImpl
+import com.example.playlistmaker.domain.search.impl.TrackInteractorImpl
 import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.domain.search.api.TrackHistoryRepository
 import com.example.playlistmaker.domain.search.api.TrackInteractor
@@ -32,6 +36,14 @@ object Creator {
     fun provideHistoryInteractor(parent: Context): HistoryInteractor {
         sharePrefs = parent.getSharedPreferences(PLAY_LIST_MAKER, Context.MODE_PRIVATE)
         return TrackHistoryInteractorImpl(getHistoryRepository())
+    }
+    private fun getSharedPrefsRepository(sharePrefs: SharedPreferences): sharedPrefsRepository {
+        return sharedPrefsRepositoryImpl(sharePrefs)
+    }
+
+    fun provideSharedPrefsInteractor(parent: Context): sharedPrefsInteractorImpl {
+        sharePrefs = parent.getSharedPreferences(PLAY_LIST_MAKER, Context.MODE_PRIVATE)
+        return sharedPrefsInteractorImpl(getSharedPrefsRepository(parent.getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)))
     }
 
 }
