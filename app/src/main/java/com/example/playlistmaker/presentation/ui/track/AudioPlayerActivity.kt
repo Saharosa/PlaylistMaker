@@ -1,10 +1,7 @@
 package com.example.playlistmaker.presentation.ui.track
 
 import android.icu.text.SimpleDateFormat
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
@@ -15,82 +12,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.Track
+import com.example.playlistmaker.domain.track.Track
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val DELAY = 300L
-    }
-    private var timePause  = 0L
-    private lateinit var stopwatch:TextView
-    private var startTime = 0L
-    private lateinit var playButton:ImageButton
-    private var mediaPlayer = MediaPlayer()
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playButton.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playButton.setBackgroundResource(R.drawable.pause)
-            playButton.setImageResource(R.drawable.pause)
-            playerState = STATE_PREPARED
-        }
-    }
-    fun timeToLong(timeS:String):Long{
-        val time = timeS.split(":")
-        val min = time[0].toLong()
-        val sec = time[1].toLong()
-        return min*60*1000+sec*1000
-    }
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playButton.setBackgroundResource(R.drawable.play)
-        playButton.setImageResource(R.drawable.play)
-        if(playerState== STATE_PREPARED){
-            playerState = STATE_PLAYING
-            startStopWatch()
-        }
-        else {
-            playerState = STATE_PLAYING
-            startStopWatch(startTime+System.currentTimeMillis()-timePause)
-            ///timeToLong(stopwatch.text.toString()))
-            Log.d("chekw222222", java.lang.Long(startTime+System.currentTimeMillis()-timePause).toString())
-        }
-
-    }
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playButton.setBackgroundResource(R.drawable.pause)
-        playButton.setImageResource(R.drawable.pause)
-        playerState = STATE_PAUSED
-    }
-    private fun playbackControl() {
-
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
     lateinit var url:String
-    val mainThreadHandler = Handler(Looper.getMainLooper())
-    private var playerState = STATE_DEFAULT
+    lateinit var viewModel: AudioViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val factory = AudioViewModelFactory()
+        viewModel = ViewModelProvider(this, factory).get(AudioViewModel::class.java)
         val currentTrack = intent.getParcelableExtra<Track>("current_track")
         setContentView(R.layout.audio_player_activity)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -102,7 +37,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         home.setOnClickListener{
             finish()
         }
-        stopwatch = findViewById(R.id.timer)
+        val stopwatch = findViewById<TextView>(R.id.timer)
         val name = findViewById<TextView>(R.id.trackName)
         val group = findViewById<TextView>(R.id.trackGroup)
         val duration = findViewById<TextView>(R.id.duration)
@@ -112,10 +47,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         val text_year = findViewById<TextView>(R.id.text_year)
         val genre = findViewById<TextView>(R.id.genre)
         val country = findViewById<TextView>(R.id.country)
-        playButton = findViewById<ImageButton>(R.id.play)
+        val playButton = findViewById<ImageButton>(R.id.play)
         url = currentTrack!!.previewUrl
         playButton.setOnClickListener(){
-            playbackControl()
+            viewModel.playbackControl()
         }
         name.text= currentTrack!!.trackName
         group.text= currentTrack.artistName
@@ -138,43 +73,27 @@ class AudioPlayerActivity : AppCompatActivity() {
         Glide.with(this).load(currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")).placeholder(
             R.drawable.placeholder
         ).centerCrop().into(cover)
-        preparePlayer()
+        viewModel.preparePlayer(url)
         Log.d("Create", "конец onCreate()")
+        viewModel.observeState().observe(this){
+            when(it){
+                is AudioState.Playing -> {
+                    playButton.setBackgroundResource(R.drawable.play)
+                    playButton.setImageResource(R.drawable.play)
+                }
+                is AudioState.Pause -> {
+                    playButton.setBackgroundResource(R.drawable.pause)
+                    playButton.setImageResource(R.drawable.pause)
+                }
+            }
+        }
+        viewModel.observeTime().observe(this){
+            stopwatch.text=it
+        }
     }
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        viewModel.pausePlayer()
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        mediaPlayer.release()
-    }
-    private fun startStopWatch(startTimeE :Long= System.currentTimeMillis()){
-        startTime=startTimeE
-        mainThreadHandler?.post(
-            createUpdatestopWatchTask(startTime)
-        )
-    }
-    private fun createUpdatestopWatchTask(startTime: Long): Runnable {
-        return object : Runnable {
-            override fun run() {
-                val elapsedTime = System.currentTimeMillis() - startTime
-                Log.d("MSG",elapsedTime.toString())
-                val seconds = elapsedTime / 1000
-                val minutes = seconds / 60
-                val secs = seconds % 60
-                if (playerState==2){
-                    stopwatch?.text = String.format("%d:%02d", minutes, secs)
-                mainThreadHandler?.postDelayed(this, DELAY)
-                }
-                else if (playerState == STATE_PREPARED) {
-                    stopwatch.text = "0:00"
-                    Log.d("OKKOKOKOKO", "00000")
-                }
-                else
-                    timePause = System.currentTimeMillis()
 
-            }
-        }
-    }
 }

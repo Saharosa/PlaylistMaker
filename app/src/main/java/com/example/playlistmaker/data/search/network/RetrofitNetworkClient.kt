@@ -1,9 +1,8 @@
-package com.example.playlistmaker.data.network
+package com.example.playlistmaker.data.search.network
 
-import android.util.Log
 import com.example.playlistmaker.data.NetworkClient
-import com.example.playlistmaker.data.dto.Response
-import com.example.playlistmaker.data.dto.TrackSearchRequest
+import com.example.playlistmaker.data.search.dto.Response
+import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

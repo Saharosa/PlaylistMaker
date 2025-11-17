@@ -1,19 +1,14 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.data.search.impl
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.data.dto.TrackResponse
-import com.example.playlistmaker.domain.Track
-import com.example.playlistmaker.domain.api.TrackHistoryRepository
+import com.example.playlistmaker.data.track.TrackDto
+import com.example.playlistmaker.domain.track.Track
+import com.example.playlistmaker.domain.search.api.TrackHistoryRepository
 import com.google.gson.Gson
 
 const val HISTORY_SAVE_KEY = "history_save_key"
-class TrackHistoryRepositoryImpl(
-    private val sharePrefs: SharedPreferences,
-    private val gson: Gson
-) : TrackHistoryRepository {
-
+class TrackHistoryRepositoryImpl(private val sharePrefs: SharedPreferences, private val gson: Gson) : TrackHistoryRepository {
     override fun loadHistory(): ArrayDeque<Track> {
         val historyJson = sharePrefs.getString(HISTORY_SAVE_KEY, "[]")
         val historyDto = gson.fromJson(historyJson, Array<TrackDto>::class.java) ?: emptyArray()
@@ -32,7 +27,6 @@ class TrackHistoryRepositoryImpl(
             )
         })
     }
-
     override fun saveHistory(trackHistory: ArrayDeque<Track>) {
         val dtoList = trackHistory.map {
             TrackDto(

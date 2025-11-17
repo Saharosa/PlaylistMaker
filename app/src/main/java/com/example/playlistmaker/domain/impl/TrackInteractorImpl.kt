@@ -2,8 +2,8 @@ package com.example.playlistmaker.domain.impl
 
 import android.os.Handler
 import android.os.Looper
-import com.example.playlistmaker.domain.api.TrackInteractor
-import com.example.playlistmaker.domain.api.TrackRepository
+import com.example.playlistmaker.domain.search.api.TrackInteractor
+import com.example.playlistmaker.domain.search.api.TrackRepository
 import java.util.concurrent.Executors
 
 
