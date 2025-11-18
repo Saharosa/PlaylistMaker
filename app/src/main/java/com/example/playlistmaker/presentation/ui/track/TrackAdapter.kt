@@ -8,12 +8,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.Track
+import com.example.playlistmaker.domain.track.Track
 
 private const val CLICK_DEBOUNCE_DELAY = 1000L
 private  val handler = Handler(Looper.getMainLooper())
 
-class TrackAdapter(private val tracks: List<Track>, val prefs: SharedPreferences, val listener: OnItemClickListener) : RecyclerView.Adapter<TrackViewHolder> (){
+class TrackAdapter(private val tracks: List<Track>,  val listener: OnItemClickListener) : RecyclerView.Adapter<TrackViewHolder> (){
     private var isClickAllowed = true
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track, parent, false)
@@ -25,7 +25,7 @@ class TrackAdapter(private val tracks: List<Track>, val prefs: SharedPreferences
         holder.itemView.setOnClickListener {
             if(clickDebounce()) {
                 Log.d("click", "нажато")
-                listener.onItemClick(tracks, position, prefs)
+                listener.onItemClick(tracks, position)
             }
             else  Log.d("click", "низя")
         }

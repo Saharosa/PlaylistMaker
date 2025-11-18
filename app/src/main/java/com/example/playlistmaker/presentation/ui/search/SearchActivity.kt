@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,44 +12,28 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import androidx.core.content.edit
-import com.bumptech.glide.request.Request
-import com.example.playlistmaker.Creator
-import com.example.playlistmaker.data.network.ItunesApi
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.data.search.network.ItunesApi
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.domain.Track
-import com.example.playlistmaker.data.dto.TrackResponse
-import com.example.playlistmaker.data.dto.TrackSearchRequest
-import com.example.playlistmaker.domain.api.HistoryInteractor
-import com.example.playlistmaker.domain.api.TrackInteractor
-import com.example.playlistmaker.presentation.ui.settings.PLAY_LIST_MAKER
+import com.example.playlistmaker.domain.track.Track
+import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.presentation.ui.track.AudioPlayerActivity
 import com.example.playlistmaker.presentation.ui.track.OnItemClickListener
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
-import com.example.playlistmaker.presentation.ui.track.TrackHistoryInteractorImpl
 
 class SearchActivity : AppCompatActivity(), OnItemClickListener {
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+         const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
@@ -60,9 +43,10 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         .baseUrl("https://itunes.apple.com")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    lateinit var sharePrefs:SharedPreferences
     lateinit var trackAdapterHistory: TrackAdapter
     lateinit var trackHistory: HistoryInteractor
+    private lateinit var binding: ActivitySearchBinding
+    private lateinit var viewModel: SearchViewModel
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume(){
         super.onResume()
@@ -70,128 +54,34 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
     }
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        trackHistory = Creator.provideHistoryInteractor(this)
+        val factory = SearchViewModelFactory(Creator.provideTracksInteractor(),trackHistory)
         val itunesService = retrofit.create(ItunesApi::class.java)
         val interactor = Creator.provideTracksInteractor()
-        sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
-        trackHistory = Creator.provideHistoryInteractor(sharePrefs)
-        trackAdapterHistory = TrackAdapter(trackHistory.getHistory(),sharePrefs,this)
-       super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_search)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        val troubleConnection = findViewById<LinearLayout>(R.id.trouble_connection)
-        val notFoundError = findViewById<LinearLayout>(R.id.not_found)
-        val update = findViewById<Button>(R.id.update)
-        val buttonHome = findViewById<Button>(R.id.home)
-        val buttonCross = findViewById<Button>(R.id.cross)
-        val search = findViewById<EditText>(R.id.search)
-        buttonHome.setOnClickListener{
-            finish()
-        }
-        val progressBar = findViewById<ProgressBar>(R.id.pb)
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
         val trackList = mutableListOf<Track>()
-        val trackAdapter = TrackAdapter(trackList,sharePrefs,this)
-        recyclerView.adapter = trackAdapter
-        val textHistory = findViewById<TextView>(R.id.history_text)
-        val clearHistory = findViewById<Button>(R.id.clear_history)
-        search.setOnFocusChangeListener { _, hasFocus ->
-            if (search.hasFocus() && search.text.toString() == "" && trackHistory.isNotEmpty()) {
-                textHistory.isVisible = true
-                clearHistory.isVisible = true
-                trackAdapterHistory.notifyDataSetChanged()
-                recyclerView.adapter = trackAdapterHistory
-            }
-            else {
-                textHistory.isVisible = false
-                clearHistory.isVisible = false
-                recyclerView.adapter = trackAdapter
-            }
-        }
-        fun trackSearch(term:String){
-            if (term.isNotEmpty()){
-                troubleConnection.isVisible = false
-                notFoundError.isVisible = false
-                progressBar.isVisible = true
-                interactor.searchTrack(term, object : TrackInteractor.TrackConsumer {
-                    override fun consume(result: Pair<List<Track>, Int>) {
-                        handler.post {
-                            trackList.addAll(result.first)
-                            val responseCode = result.second
-                            if (result.second == 200) {
-                                if (result.first.isNotEmpty()) {
-                                    trackList.clear()
-                                    trackList.addAll(result.first)
-                                    trackAdapter.notifyDataSetChanged()
-                                    if (trackList.isEmpty()) {
-                                        notFoundError.isVisible = true
-                                        textHistory.isVisible = false
-                                        clearHistory.isVisible = false
-                                        recyclerView.adapter = trackAdapter
-                                        trackAdapter.notifyDataSetChanged()
-                                        progressBar.isVisible = false
-                                    }
-                                } else {
-                                    trackList.clear()
-                                    trackAdapter.notifyDataSetChanged()
-                                    failedSearch = term
-                                    troubleConnection.isVisible = true
-                                    textHistory.isVisible = false
-                                    clearHistory.isVisible = false
-                                    recyclerView.adapter = trackAdapter
-                                    progressBar.isVisible = false
-                                }
-                            }
-                            if (result.second != 200) {
-                                trackList.clear()
-                                trackAdapter.notifyDataSetChanged()
-                                troubleConnection.isVisible = true
-                                textHistory.isVisible = false
-                                clearHistory.isVisible = false
-                                recyclerView.adapter = trackAdapter
-                                failedSearch = term
-                            }
-                        }
-                    }
-                })
-            }
-        }
-        val searchRunnable = Runnable { trackSearch(search.text.toString()) }
-        val handler = Handler(Looper.getMainLooper())
-        fun searchDebounce() {
-            handler.removeCallbacks(searchRunnable)
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-        }
-        search.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchRunnable
-            }
-            false
-        }
+        val trackAdapter = TrackAdapter(trackList,this)
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                buttonCross.isVisible = !s.isNullOrEmpty()
-                if (search.hasFocus() && search.text.toString() == "" && trackHistory.isNotEmpty()) {
-                    textHistory.isVisible = true
-                    clearHistory.isVisible = true
+                binding.cross.isVisible = !s.isNullOrEmpty()
+                if (binding.search.hasFocus() && binding.search.text.toString() == "" && trackHistory.isNotEmpty()) {
+                    binding.historyText.isVisible = true
+                    binding.clearHistory.isVisible = true
+                    binding.notFound.isVisible=false
                     trackAdapterHistory.notifyDataSetChanged()
-                    recyclerView.adapter = trackAdapterHistory
-
+                    binding.recyclerView.adapter = trackAdapterHistory
+                    viewModel.search("")
                 }
-                else if (search.hasFocus() && search.text.toString() != ""){
-                    textHistory.isVisible = false
-                    clearHistory.isVisible = false
-                    recyclerView.adapter = trackAdapter
-                    searchDebounce()
+                else if (binding.search.hasFocus() && binding.search.text.toString() != ""){
+                    binding.historyText.isVisible = false
+                    binding.clearHistory.isVisible = false
+                    binding.recyclerView.adapter = trackAdapter
+                    viewModel.search(binding.search.text.toString())
                 }
             }
 
@@ -199,60 +89,125 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
 
             }
         }
-        search.addTextChangedListener(simpleTextWatcher)
-        search.setText(searchText)
-
-        buttonCross.setOnClickListener(){
-            search.setText("")
+        viewModel = ViewModelProvider(this, factory).get(SearchViewModel::class.java)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        trackAdapterHistory = TrackAdapter(trackHistory.getHistory(),this)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        binding.home.setOnClickListener{
+            finish()
+        }
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = trackAdapter
+        binding.search.setOnFocusChangeListener { _, hasFocus ->
+            if (binding.search.hasFocus() && binding.search.text.toString() == "" && trackHistory.isNotEmpty()) {
+                binding.historyText.isVisible = true
+                binding.clearHistory.isVisible = true
+                trackAdapterHistory.notifyDataSetChanged()
+                binding.recyclerView.adapter = trackAdapterHistory
+            }
+            else {
+                binding.historyText.isVisible = false
+                binding.clearHistory.isVisible = false
+                binding.recyclerView.adapter = trackAdapter
+            }
+        }
+        binding.search.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                viewModel.search(binding.search.text.toString())
+            }
+            false
+        }
+        binding.search.addTextChangedListener(simpleTextWatcher)
+        binding.search.setText(searchText)
+        binding.cross.setOnClickListener(){
+            binding.search.setText("")
             trackList.clear()
-            trackAdapter.notifyDataSetChanged()
+            binding.recyclerView.adapter=trackAdapterHistory
+            trackAdapterHistory.notifyDataSetChanged()
             searchText=""
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(search.windowToken, 0)
-            notFoundError.isVisible=false
-            troubleConnection.isVisible=false
-            progressBar.isVisible=false
+            inputMethodManager?.hideSoftInputFromWindow(binding.search.windowToken, 0)
+            binding.notFound.isVisible=false
+            binding.troubleConnection.isVisible=false
+            binding.pb.isVisible=false
         }
-
-        update.setOnClickListener {
-            trackSearch(failedSearch)
+        binding.update.setOnClickListener {
+            viewModel.search(failedSearch)
         }
-        clearHistory.setOnClickListener{
+        binding.clearHistory.setOnClickListener{
             trackHistory.clear()
             trackHistory.saveHistory()
             trackAdapterHistory.notifyDataSetChanged()
-            textHistory.isVisible = false
-            clearHistory.isVisible = false
+            binding.historyText.isVisible = false
+            binding.clearHistory.isVisible = false
         }
         trackHistory.clear()
         trackHistory.loadHistory()
         if (!trackHistory.isNullOrEmpty()){
-            textHistory.isVisible = true
-            clearHistory.isVisible = true
+            binding.historyText.isVisible = true
+            binding.clearHistory.isVisible = true
             trackAdapterHistory.notifyDataSetChanged()
-            recyclerView.adapter = trackAdapterHistory
+            binding.recyclerView.adapter = trackAdapterHistory
+        }
+        viewModel.observeState().observe(this) {
+            when (it){
+                is SearchState.NoConnection-> {
+                    Log.d("STATE","NoConnection_STATE")
+                    binding.troubleConnection.isVisible=true
+                    binding.pb.isVisible=false
+                    binding.notFound.isVisible=false
+                }
+                is SearchState.Empty-> {
+                    Log.d("STATE","Empty_STATE")
+                    binding.troubleConnection.isVisible=false
+                    binding.pb.isVisible=false
+                    binding.notFound.isVisible=true
+            }
+                is SearchState.Content->{
+                    Log.d("STATE","CONTENT_STATE ")
+                    trackList.clear()
+                    trackList.addAll(it.Track)
+                    binding.recyclerView.adapter=trackAdapter
+                    trackAdapter.notifyDataSetChanged()
+                    binding.troubleConnection.isVisible=false
+                    binding.pb.isVisible=false
+                    binding.notFound.isVisible=false
+                }
+                is SearchState.Loading->{
+                    Log.d("STATE","Loading_STATE")
+                    binding.notFound.isVisible=false
+                    binding.troubleConnection.isVisible=false
+                    binding.pb.isVisible=true
+                    trackList.clear()
+                    trackAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+        viewModel.observeSearchText().observe(this){
+            binding.search.setText(it)
         }
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("searchText",searchText)
+        viewModel.setSearchText(binding.search.text.toString())
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString("searchText","")
+    override fun onItemClick(tracks: List<Track>, position: Int ) {
 
-    }
-    override fun onItemClick(tracks: List<Track>, position: Int, prefs:SharedPreferences) {
-        val currentTrack=tracks[position]
-        var availability = trackHistory.checkAvailability(tracks[position])
-        if (!availability){
-            trackHistory.addElement(tracks[position])
+        for (track in tracks){
+            Log.d("DEBUG IN FOR","CURENT TRACK IS "+track.artistName)
         }
-        trackHistory.saveHistory()
+
+        Log.d("DEBUG","CURENT TRACK IS "+tracks[position].artistName)
         val displayIntent = Intent(this, AudioPlayerActivity::class.java).apply{
-            putExtra("current_track", currentTrack)
+            putExtra("current_track", tracks[position])
         }
+        viewModel.addToHistory(tracks,position)
         startActivity(displayIntent)
     }
 }

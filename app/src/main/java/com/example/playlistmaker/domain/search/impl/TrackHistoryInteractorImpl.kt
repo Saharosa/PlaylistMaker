@@ -1,14 +1,10 @@
-package com.example.playlistmaker.presentation.ui.track
+package com.example.playlistmaker.domain.search.impl
 
-import android.util.Log
-import androidx.core.content.edit
-import com.example.playlistmaker.domain.Track
-import com.example.playlistmaker.domain.api.HistoryInteractor
-import com.example.playlistmaker.domain.api.TrackHistoryRepository
-import com.google.gson.Gson
+import com.example.playlistmaker.domain.track.Track
+import com.example.playlistmaker.domain.search.api.HistoryInteractor
+import com.example.playlistmaker.domain.search.api.TrackHistoryRepository
 
-
-class TrackHistoryInteractorImpl(val repository: TrackHistoryRepository):HistoryInteractor{
+class TrackHistoryInteractorImpl(val repository: TrackHistoryRepository): HistoryInteractor {
     private val trackHistoryList: ArrayDeque<Track> =ArrayDeque<Track>()
 
     override fun getHistory():ArrayDeque<Track>{
@@ -23,7 +19,7 @@ class TrackHistoryInteractorImpl(val repository: TrackHistoryRepository):History
     override fun clear(){
         trackHistoryList.clear()
     }
-    override fun addElement(track:Track){
+    override fun addElement(track: Track){
         if(trackHistoryList.size<10){
             trackHistoryList.addFirst(track)
         }
@@ -32,7 +28,7 @@ class TrackHistoryInteractorImpl(val repository: TrackHistoryRepository):History
             trackHistoryList.addFirst(track)
         }
     }
-    override fun checkAvailability(track:Track):Boolean{
+    override fun checkAvailability(track: Track):Boolean{
         for (i in trackHistoryList){
             if (i.trackId==track.trackId){
                 val temp = i
@@ -49,5 +45,14 @@ class TrackHistoryInteractorImpl(val repository: TrackHistoryRepository):History
 
     override fun saveHistory() {
         repository.saveHistory(trackHistoryList)
+    }
+
+    override fun addToHistory(tracks: List<Track>, position: Int){
+        val currentTrack=tracks[position]
+        var availability = checkAvailability(tracks[position])
+        if (!availability){
+            addElement(tracks[position])
+        }
+        saveHistory()
     }
 }

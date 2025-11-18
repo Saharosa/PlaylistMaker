@@ -1,10 +1,10 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.data.search.impl
 
-import android.util.Log
-import com.example.playlistmaker.data.dto.TrackResponse
-import com.example.playlistmaker.data.dto.TrackSearchRequest
-import com.example.playlistmaker.domain.Track
-import com.example.playlistmaker.domain.api.TrackRepository
+import com.example.playlistmaker.data.NetworkClient
+import com.example.playlistmaker.data.search.dto.TrackResponse
+import com.example.playlistmaker.data.search.dto.TrackSearchRequest
+import com.example.playlistmaker.domain.track.Track
+import com.example.playlistmaker.domain.search.api.TrackRepository
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
 
