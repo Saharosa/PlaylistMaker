@@ -9,9 +9,10 @@ import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.track.Track
 import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.domain.search.api.TrackInteractor
-import com.example.playlistmaker.presentation.ui.search.SearchActivity.Companion.SEARCH_DEBOUNCE_DELAY
-
 class SearchViewModel(private val trackInteractor: TrackInteractor,private val trackHistory: HistoryInteractor): ViewModel() {
+    companion object {
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+    }
     private val trackList = mutableListOf<Track>()
     private val handler = Handler(Looper.getMainLooper())
     private var lastTerm = ""

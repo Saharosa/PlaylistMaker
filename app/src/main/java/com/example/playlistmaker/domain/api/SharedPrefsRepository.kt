@@ -1,7 +1,6 @@
 package com.example.playlistmaker.domain.api
 
-import android.content.SharedPreferences
-
-interface sharedPrefsRepository {
+interface SharedPrefsRepository {
     fun getString(key:String,defValue:String):String?
+    fun edit(term:String)
 }
