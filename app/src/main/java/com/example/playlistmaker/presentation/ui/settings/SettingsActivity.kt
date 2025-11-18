@@ -10,7 +10,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.SharedPrefsInteractor
 import com.google.android.material.switchmaterial.SwitchMaterial
+import org.koin.android.ext.android.inject
+import kotlin.getValue
 
 const val PLAY_LIST_MAKER="play_list_maker"
 const val THEME_KEY = "them_key"
@@ -18,7 +21,7 @@ const val THEME_KEY = "them_key"
 class SettingsActivity : AppCompatActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-       val sharePrefs = getSharedPreferences(PLAY_LIST_MAKER, MODE_PRIVATE)
+       val sharePrefInteractor : SharedPrefsInteractor by inject()
        setContentView(R.layout.activity_settings)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -57,7 +60,7 @@ class SettingsActivity : AppCompatActivity() {
         switchDarkTheme.setOnCheckedChangeListener {switcher, isChecked ->
             if(isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            sharePrefs.edit().putString(THEME_KEY,isChecked.toString()).apply()
+            sharePrefInteractor.edit(isChecked.toString())
         }
         if(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
             switchDarkTheme.isChecked=true

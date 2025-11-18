@@ -30,6 +30,7 @@ import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.presentation.ui.track.AudioPlayerActivity
 import com.example.playlistmaker.presentation.ui.track.OnItemClickListener
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity(), OnItemClickListener {
     companion object {
@@ -46,7 +47,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
     lateinit var trackAdapterHistory: TrackAdapter
     lateinit var trackHistory: HistoryInteractor
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+
+    private  val viewModel: SearchViewModel by viewModel()
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume(){
         super.onResume()
@@ -57,7 +59,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         trackHistory = Creator.provideHistoryInteractor(this)
-        val factory = SearchViewModelFactory(Creator.provideTracksInteractor(),trackHistory)
         val itunesService = retrofit.create(ItunesApi::class.java)
         val interactor = Creator.provideTracksInteractor()
         val trackList = mutableListOf<Track>()
@@ -89,7 +90,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
 
             }
         }
-        viewModel = ViewModelProvider(this, factory).get(SearchViewModel::class.java)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         trackAdapterHistory = TrackAdapter(trackHistory.getHistory(),this)
         setContentView(binding.root)

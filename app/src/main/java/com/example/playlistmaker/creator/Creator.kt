@@ -7,7 +7,7 @@ import com.example.playlistmaker.data.impl.sharedPrefsRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackHistoryRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
-import com.example.playlistmaker.domain.api.sharedPrefsRepository
+import com.example.playlistmaker.domain.api.SharedPrefsRepository
 import com.example.playlistmaker.domain.impl.sharedPrefsInteractorImpl
 import com.example.playlistmaker.domain.search.impl.TrackHistoryInteractorImpl
 import com.example.playlistmaker.domain.search.impl.TrackInteractorImpl
@@ -37,7 +37,7 @@ object Creator {
         sharePrefs = parent.getSharedPreferences(PLAY_LIST_MAKER, Context.MODE_PRIVATE)
         return TrackHistoryInteractorImpl(getHistoryRepository())
     }
-    private fun getSharedPrefsRepository(sharePrefs: SharedPreferences): sharedPrefsRepository {
+    private fun getSharedPrefsRepository(sharePrefs: SharedPreferences): SharedPrefsRepository {
         return sharedPrefsRepositoryImpl(sharePrefs)
     }
 

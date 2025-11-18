@@ -16,17 +16,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.track.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
     lateinit var url:String
-    lateinit var viewModel: AudioViewModel
+    val viewModel: AudioViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val factory = AudioViewModelFactory()
-        viewModel = ViewModelProvider(this, factory).get(AudioViewModel::class.java)
-        val currentTrack = intent.getParcelableExtra<Track>("current_track")
+         val currentTrack = intent.getParcelableExtra<Track>("current_track")
         setContentView(R.layout.audio_player_activity)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
