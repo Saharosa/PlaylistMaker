@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ID
+package com.example.playlistmaker.di
 
 import com.example.playlistmaker.presentation.ui.search.SearchViewModel
 import com.example.playlistmaker.presentation.ui.track.AudioViewModel
@@ -9,5 +9,5 @@ val viewModelModule = module {
     viewModel {
         SearchViewModel(get(),get())
     }
-    viewModel { AudioViewModel() }
+    viewModel { AudioViewModel(get()) }
 }

@@ -2,11 +2,12 @@ package com.example.playlistmaker.presentation
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.ID.appModule
-import com.example.playlistmaker.ID.interactorModule
-import com.example.playlistmaker.ID.networkModule
-import com.example.playlistmaker.ID.repositoryModule
-import com.example.playlistmaker.ID.viewModelModule
+import com.example.playlistmaker.di.appModule
+import com.example.playlistmaker.di.audioModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.networkModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.api.SharedPrefsInteractor
 import com.example.playlistmaker.presentation.ui.settings.THEME_KEY
 import org.koin.android.ext.android.inject
@@ -23,7 +24,8 @@ class App : Application() {
                 networkModule,
                 repositoryModule,
                 interactorModule,
-                viewModelModule
+                viewModelModule,
+                audioModule
             )
         }
         val sharePrefInteractor : SharedPrefsInteractor by inject()

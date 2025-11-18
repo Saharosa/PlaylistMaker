@@ -1,5 +1,6 @@
-package com.example.playlistmaker.ID
+package com.example.playlistmaker.di
 
+import android.media.MediaPlayer
 import com.example.playlistmaker.domain.api.SharedPrefsInteractor
 import com.example.playlistmaker.domain.impl.sharedPrefsInteractorImpl
 import com.example.playlistmaker.domain.search.api.HistoryInteractor
@@ -13,3 +14,7 @@ val interactorModule = module {
     single<HistoryInteractor> { TrackHistoryInteractorImpl(get()) }
     single<SharedPrefsInteractor> { sharedPrefsInteractorImpl(get()) }
 }
+val audioModule = module {
+    factory { MediaPlayer() }
+}
+

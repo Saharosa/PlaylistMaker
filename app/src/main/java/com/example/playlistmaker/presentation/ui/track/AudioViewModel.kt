@@ -7,8 +7,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import org.koin.java.KoinJavaComponent.inject
+import kotlin.getValue
 
-class AudioViewModel: ViewModel()  {
+
+class AudioViewModel(    val mediaPlayer:MediaPlayer): ViewModel()  {
     companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
@@ -25,7 +28,7 @@ class AudioViewModel: ViewModel()  {
     private var startTime = 0L
     private var playerState = STATE_DEFAULT
     val mainThreadHandler = Handler(Looper.getMainLooper())
-    private var mediaPlayer = MediaPlayer()
+
     fun createUpdatestopWatchTask(startTime: Long): Runnable {
         return object : Runnable {
             override fun run() {

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -21,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.data.search.network.ItunesApi
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.track.Track
@@ -30,9 +30,12 @@ import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.presentation.ui.track.AudioPlayerActivity
 import com.example.playlistmaker.presentation.ui.track.OnItemClickListener
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent
 
 class SearchActivity : AppCompatActivity(), OnItemClickListener {
+
     companion object {
          const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
@@ -45,8 +48,9 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     lateinit var trackAdapterHistory: TrackAdapter
-    lateinit var trackHistory: HistoryInteractor
+    val trackHistory: HistoryInteractor by inject()
     private lateinit var binding: ActivitySearchBinding
+
 
     private  val viewModel: SearchViewModel by viewModel()
     @SuppressLint("NotifyDataSetChanged")
@@ -58,9 +62,13 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        trackHistory = Creator.provideHistoryInteractor(this)
+        if (trackHistory.isNotEmpty()){
+            Log.d("CREATE","TRACK HISTORY IS NOT EMPTY")
+        }
+        else{
+            Log.d("CREATE","TRACK HISTORY IS EMPTY")
+        }
         val itunesService = retrofit.create(ItunesApi::class.java)
-        val interactor = Creator.provideTracksInteractor()
         val trackList = mutableListOf<Track>()
         val trackAdapter = TrackAdapter(trackList,this)
         val simpleTextWatcher = object : TextWatcher {
