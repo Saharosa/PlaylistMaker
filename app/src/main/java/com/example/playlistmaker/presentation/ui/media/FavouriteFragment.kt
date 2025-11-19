@@ -11,7 +11,7 @@ class FavouriteFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(number: Int) = FavouriteFragment().apply {
+        fun newInstance() = FavouriteFragment().apply {
             arguments = Bundle().apply {
             }
         }

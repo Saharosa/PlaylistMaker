@@ -11,7 +11,7 @@ class PlaylistFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(number: Int) = PlaylistFragment().apply {
+        fun newInstance() = PlaylistFragment().apply {
             arguments = Bundle().apply {
             }
         }
