@@ -148,4 +148,9 @@
     <style name="roundButtons">
         <item name="android:backgroundTint">#c5c6c7</item>
     </style>
+    <style name="TabTextStyle" >
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+
 </resources>
