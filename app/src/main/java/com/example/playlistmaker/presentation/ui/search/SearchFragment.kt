@@ -1,46 +1,49 @@
 package com.example.playlistmaker.presentation.ui.search
 
-
 import android.annotation.SuppressLint
-import android.view.inputmethod.InputMethodManager
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import com.example.playlistmaker.data.search.network.ItunesApi
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.track.Track
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.data.search.network.ItunesApi
+import com.example.playlistmaker.databinding.FragmentPlaylistBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.api.HistoryInteractor
-import com.example.playlistmaker.presentation.ui.track.AudioPlayerActivity
+import com.example.playlistmaker.domain.track.Track
+import com.example.playlistmaker.presentation.ui.media.PlaylistFragment
+import com.example.playlistmaker.presentation.ui.track.AudioPlayerFragment.Companion.ARGS_TRACK
 import com.example.playlistmaker.presentation.ui.track.OnItemClickListener
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.java.KoinJavaComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.getValue
 
-class SearchActivity : AppCompatActivity(), OnItemClickListener {
+class SearchFragment :Fragment(),OnItemClickListener {
 
     companion object {
-         const val SEARCH_DEBOUNCE_DELAY = 2000L
+
+        fun newInstance() = SearchFragment().apply {
+            arguments = Bundle().apply {
+            }
+        }
     }
-    private val handler = Handler(Looper.getMainLooper())
-    private var isClickAllowed = true
     var searchText=""
     var failedSearch=""
     val retrofit = Retrofit.Builder()
@@ -49,8 +52,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         .build()
     lateinit var trackAdapterHistory: TrackAdapter
     val trackHistory: HistoryInteractor by inject()
-    private lateinit var binding: ActivitySearchBinding
-
+    private lateinit var binding: FragmentSearchBinding
 
     private  val viewModel: SearchViewModel by viewModel()
     @SuppressLint("NotifyDataSetChanged")
@@ -59,9 +61,15 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         trackAdapterHistory.notifyDataSetChanged()
     }
     @SuppressLint("NotifyDataSetChanged")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (trackHistory.isNotEmpty()){
             Log.d("CREATE","TRACK HISTORY IS NOT EMPTY")
         }
@@ -98,18 +106,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
 
             }
         }
-        binding = ActivitySearchBinding.inflate(layoutInflater)
         trackAdapterHistory = TrackAdapter(trackHistory.getHistory(),this)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        binding.home.setOnClickListener{
-            finish()
-        }
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = trackAdapter
         binding.search.setOnFocusChangeListener { _, hasFocus ->
             if (binding.search.hasFocus() && binding.search.text.toString() == "" && trackHistory.isNotEmpty()) {
@@ -138,7 +136,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
             binding.recyclerView.adapter=trackAdapterHistory
             trackAdapterHistory.notifyDataSetChanged()
             searchText=""
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.search.windowToken, 0)
             binding.notFound.isVisible=false
             binding.troubleConnection.isVisible=false
@@ -175,7 +173,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
                     binding.troubleConnection.isVisible=false
                     binding.pb.isVisible=false
                     binding.notFound.isVisible=true
-            }
+                }
                 is SearchState.Content->{
                     Log.d("STATE","CONTENT_STATE ")
                     trackList.clear()
@@ -204,19 +202,15 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         super.onSaveInstanceState(outState)
         viewModel.setSearchText(binding.search.text.toString())
     }
-
     override fun onItemClick(tracks: List<Track>, position: Int ) {
-
-        for (track in tracks){
-            Log.d("DEBUG IN FOR","CURENT TRACK IS "+track.artistName)
+//        val displayIntent = Intent(this, AudioPlayerActivity::class.java).apply{
+//            putExtra("current_track", tracks[position])
+//        }
+//        viewModel.addToHistory(tracks,position)
+//        startActivity(displayIntent)
+        val bundle = Bundle().apply {
+            putParcelable(ARGS_TRACK, tracks[position])
         }
-
-        Log.d("DEBUG","CURENT TRACK IS "+tracks[position].artistName)
-        val displayIntent = Intent(this, AudioPlayerActivity::class.java).apply{
-            putExtra("current_track", tracks[position])
-        }
-        viewModel.addToHistory(tracks,position)
-        startActivity(displayIntent)
+        findNavController().navigate(R.id.audioPlayerFragment,bundle)
     }
 }
-

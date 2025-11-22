@@ -5,7 +5,9 @@
     android:id="@+id/main"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/colorPrimary">
+    android:background="?attr/colorPrimary"
+    tools:context=".presentation.ui.track.AudioPlayerFragment"
+    >
 
 
     <androidx.constraintlayout.widget.Guideline

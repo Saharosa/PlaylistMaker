@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:theme="@style/Base.Theme.PlaylistMaker"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settings"
-    android:background="?attr/colorPrimary">
-    <Button
+    android:background="?attr/colorPrimary"
+    tools:context=".presentation.ui.settings.SettingsFragment">
+    <TextView
         style = "@style/top_button_sett"
         app:iconGravity = "textStart"
         android:text="@string/settings"
         android:fontFamily="@font/ys_display_medium"
         android:textSize="@dimen/avrg_text_size"
-        app:icon = "@drawable/arrowback"
-        app:iconPadding = "@dimen/low_margin"
         android:layout_marginBottom="20dp"
         android:id="@+id/home"
         />
@@ -28,17 +28,17 @@
         android:layout_height="wrap_content"
 
         />
-    <Button
+    <com.google.android.material.button.MaterialButton
         style="@style/top_button"
         android:text="@string/sharing"
         app:icon = "@drawable/share"
         android:id="@+id/buttonShare"/>
-    <Button
+    <com.google.android.material.button.MaterialButton
        style="@style/top_button"
         android:text="@string/support"
         app:icon = "@drawable/group"
         android:id="@+id/support" />
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:text="@string/user_agreement"
         app:icon = "@drawable/arrow"
         style="@style/top_button"

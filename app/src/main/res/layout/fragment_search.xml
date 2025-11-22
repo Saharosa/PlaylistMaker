@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.search.SearchActivity"
+    tools:context=".presentation.ui.search.SearchFragment"
     android:theme="@style/Base.Theme.PlaylistMaker">
     <FrameLayout
         android:layout_width="match_parent"
@@ -15,14 +15,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="?attr/colorPrimary">
-        <Button
+        <TextView
         style = "@style/top_button"
         app:iconGravity = "textStart"
         android:text="@string/search_title"
         android:fontFamily="@font/ys_display_medium"
         android:textSize="@dimen/avrg_text_size"
-        app:icon = "@drawable/arrowback"
-        app:iconPadding = "@dimen/low_margin"
         android:layout_marginBottom="0dp"
         android:id="@+id/home"
         android:layout_height="56dp"
