@@ -2,7 +2,6 @@ package com.example.playlistmaker.presentation.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,23 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.search.network.ItunesApi
-import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.domain.track.Track
-import com.example.playlistmaker.presentation.ui.media.PlaylistFragment
 import com.example.playlistmaker.presentation.ui.track.AudioPlayerFragment.Companion.ARGS_TRACK
 import com.example.playlistmaker.presentation.ui.track.OnItemClickListener
 import com.example.playlistmaker.presentation.ui.track.TrackAdapter
-import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import retrofit2.Retrofit
@@ -70,13 +63,6 @@ class SearchFragment :Fragment(),OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (trackHistory.isNotEmpty()){
-            Log.d("CREATE","TRACK HISTORY IS NOT EMPTY")
-        }
-        else{
-            Log.d("CREATE","TRACK HISTORY IS EMPTY")
-        }
-        val itunesService = retrofit.create(ItunesApi::class.java)
         val trackList = mutableListOf<Track>()
         val trackAdapter = TrackAdapter(trackList,this)
         val simpleTextWatcher = object : TextWatcher {
@@ -160,7 +146,7 @@ class SearchFragment :Fragment(),OnItemClickListener {
             trackAdapterHistory.notifyDataSetChanged()
             binding.recyclerView.adapter = trackAdapterHistory
         }
-        viewModel.observeState().observe(this) {
+        viewModel.observeState().observe(requireActivity()) {
             when (it){
                 is SearchState.NoConnection-> {
                     Log.d("STATE","NoConnection_STATE")
@@ -175,14 +161,17 @@ class SearchFragment :Fragment(),OnItemClickListener {
                     binding.notFound.isVisible=true
                 }
                 is SearchState.Content->{
-                    Log.d("STATE","CONTENT_STATE ")
-                    trackList.clear()
-                    trackList.addAll(it.Track)
-                    binding.recyclerView.adapter=trackAdapter
-                    trackAdapter.notifyDataSetChanged()
-                    binding.troubleConnection.isVisible=false
-                    binding.pb.isVisible=false
-                    binding.notFound.isVisible=false
+                    if (it.waitOfContent) {
+                        Log.d("STATE", "CONTENT_STATE ")
+                        trackList.clear()
+                        trackList.addAll(it.Track)
+                        binding.recyclerView.adapter = trackAdapter
+                        trackAdapter.notifyDataSetChanged()
+                        binding.troubleConnection.isVisible = false
+                        binding.pb.isVisible = false
+                        binding.notFound.isVisible = false
+                        viewModel.notifyContentIsShowing()
+                    }
                 }
                 is SearchState.Loading->{
                     Log.d("STATE","Loading_STATE")
@@ -194,7 +183,7 @@ class SearchFragment :Fragment(),OnItemClickListener {
                 }
             }
         }
-        viewModel.observeSearchText().observe(this){
+        viewModel.observeSearchText().observe(requireActivity()){
             binding.search.setText(it)
         }
     }
@@ -203,11 +192,8 @@ class SearchFragment :Fragment(),OnItemClickListener {
         viewModel.setSearchText(binding.search.text.toString())
     }
     override fun onItemClick(tracks: List<Track>, position: Int ) {
-//        val displayIntent = Intent(this, AudioPlayerActivity::class.java).apply{
-//            putExtra("current_track", tracks[position])
-//        }
-//        viewModel.addToHistory(tracks,position)
-//        startActivity(displayIntent)
+
+         viewModel.addToHistory(tracks,position)
         val bundle = Bundle().apply {
             putParcelable(ARGS_TRACK, tracks[position])
         }

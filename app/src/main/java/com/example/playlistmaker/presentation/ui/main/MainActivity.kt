@@ -25,6 +25,12 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.audioPlayerFragment -> bottomNavigationView.visibility = View.GONE
+                else -> bottomNavigationView.visibility = View.VISIBLE
+            }
+        }
 
 
     }
