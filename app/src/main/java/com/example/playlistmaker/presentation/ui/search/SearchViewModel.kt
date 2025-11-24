@@ -19,10 +19,12 @@ class SearchViewModel(private val trackInteractor: TrackInteractor,private val t
     private val searchRunnable =Runnable { searchDebounced(lastTerm)}
     private val stateLiveData = MutableLiveData<SearchState>()
     private val searchTextLiveData = MutableLiveData<String>()
+
     fun setSearchText(term:String){
         searchTextLiveData.postValue(term)
     }
     fun observeSearchText(): LiveData<String> = searchTextLiveData
+
     fun observeState(): LiveData<SearchState> = stateLiveData
 
     fun search(term:String) {
@@ -35,14 +37,13 @@ class SearchViewModel(private val trackInteractor: TrackInteractor,private val t
             stateLiveData.postValue(SearchState.Loading)
             trackInteractor.searchTrack(term, object : TrackInteractor.TrackConsumer {
                 override fun consume(result: Pair<List<Track>, Int>) {
-                    Log.d("STATE", "serching " + term)
                     handler.post {
                         trackList.clear()
                         trackList.addAll(result.first)
                         val responseCode = result.second
                         if (result.second == 200) {
                             if (result.first.isNotEmpty()) {
-                                stateLiveData.postValue(SearchState.Content(trackList))
+                                stateLiveData.postValue(SearchState.Content(trackList,true))
                             } else {
                                 stateLiveData.postValue(SearchState.Empty(responseCode.toString()))
                             }
@@ -57,5 +58,8 @@ class SearchViewModel(private val trackInteractor: TrackInteractor,private val t
     }
     fun addToHistory(tracks: List<Track>, position: Int){
         trackHistory.addToHistory(tracks,position)
+    }
+    fun notifyContentIsShowing(){
+        stateLiveData.postValue(SearchState.Content(trackList,false))
     }
 }

@@ -9,7 +9,7 @@ import com.example.playlistmaker.di.networkModule
 import com.example.playlistmaker.di.repositoryModule
 import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.api.SharedPrefsInteractor
-import com.example.playlistmaker.presentation.ui.settings.THEME_KEY
+import com.example.playlistmaker.presentation.ui.settings.SettingsFragment.Companion.THEME_KEY
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin

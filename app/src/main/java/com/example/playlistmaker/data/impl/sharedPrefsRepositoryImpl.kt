@@ -2,7 +2,7 @@ package com.example.playlistmaker.data.impl
 
 import android.content.SharedPreferences
 import com.example.playlistmaker.domain.api.SharedPrefsRepository
-import com.example.playlistmaker.presentation.ui.settings.THEME_KEY
+import com.example.playlistmaker.presentation.ui.settings.SettingsFragment.Companion.THEME_KEY
 
 class sharedPrefsRepositoryImpl(val sharePref: SharedPreferences): SharedPrefsRepository {
     override fun getString(key: String, defValue: String):String?{

@@ -1,39 +1,43 @@
 package com.example.playlistmaker.presentation.ui.settings
 
-
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.domain.api.SharedPrefsInteractor
-import com.google.android.material.switchmaterial.SwitchMaterial
 import org.koin.android.ext.android.inject
 import kotlin.getValue
 
-const val PLAY_LIST_MAKER="play_list_maker"
-const val THEME_KEY = "them_key"
+class SettingsFragment : Fragment() {
 
-class SettingsActivity : AppCompatActivity() {
-   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-       val sharePrefInteractor : SharedPrefsInteractor by inject()
-       setContentView(R.layout.activity_settings)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+    companion object {
+        const val PLAY_LIST_MAKER="play_list_maker"
+        const val THEME_KEY = "them_key"
+        fun newInstance() = SettingsFragment().apply {
+            arguments = Bundle().apply {
+            }
         }
-        val buttonHome = findViewById<Button>(R.id.home)
-        buttonHome.setOnClickListener {
-           finish()
-        }
-        val buttonSupport = findViewById<Button>(R.id.support)
-        buttonSupport.setOnClickListener{
+    }
+    private lateinit var binding : FragmentSettingsBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val sharePrefInteractor : SharedPrefsInteractor by inject()
+        binding.support.setOnClickListener{
             val message = R.string.message
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
@@ -42,29 +46,28 @@ class SettingsActivity : AppCompatActivity() {
             shareIntent.putExtra(Intent.EXTRA_TEXT, message)
             startActivity(shareIntent)
         }
-        val buttonShare = findViewById<Button>(R.id.buttonShare)
-        buttonShare.setOnClickListener {
+        binding.buttonShare.setOnClickListener {
             val message = getString(R.string.adURL)
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, message)
             startActivity(Intent.createChooser(shareIntent, R.string.share_with.toString()))
         }
-        val buttonUserAgreement = findViewById<Button>(R.id.userAgreement)
-        buttonUserAgreement.setOnClickListener{
+        binding.userAgreement.setOnClickListener{
             val url = getString(R.string.ypURL)
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(browserIntent)
         }
-        val switchDarkTheme = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        switchDarkTheme.setOnCheckedChangeListener {switcher, isChecked ->
+        binding.themeSwitcher.setOnCheckedChangeListener {switcher, isChecked ->
             if(isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             sharePrefInteractor.edit(isChecked.toString())
         }
         if(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
-            switchDarkTheme.isChecked=true
+            binding.themeSwitcher.isChecked=true
         }
-       else switchDarkTheme.isChecked=false
+        else binding.themeSwitcher.isChecked=false
+
     }
+
 }

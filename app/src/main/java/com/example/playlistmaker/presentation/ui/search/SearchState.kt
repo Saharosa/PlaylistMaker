@@ -8,7 +8,8 @@ sealed interface SearchState {
     object Loading : SearchState
 
     data class Content(
-        val Track: List<Track>
+        val Track: List<Track>,
+        val waitOfContent: Boolean
     ) : SearchState
 
     data class NoConnection(
